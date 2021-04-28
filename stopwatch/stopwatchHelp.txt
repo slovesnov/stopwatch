@@ -1,0 +1,38 @@
+STOPWATCH MODE
+Use <i>stopwatch.exe s 100 200 500</i> the same <i>stopwatch.exe s 1 2 5</i>
+Values [1..9] interprets as minutes, values [10...99] interprets as seconds. 
+Values &gt;99 interprets as minunes+seconds, for example 123 means 1minute+23seconds=83seconds
+It's possible to use <i>+</i> as shift from last value. <i>stopwatch s 1 +20</i> beeps after 60 and 60+20=80 seconds
+For plus values counter is allowed <i>stopwatch s 1 +20,3 +1</i> = <i>stopwatch s 1 +20 +20 +20 +1</i>
+For arguments with counter <i>+</i> can be omitted <i>stopwatch s 1 +20,3 +1</i> = <i>stopwatch s 1 20,3 +1</i>
+
+MINUTE MODE
+Use <i>stopwatch m 15 45</i>. Program plays sound when minutes = 15 or 45 an any hour
+<i>stopwatch m 15 +5</i> = <i>stopwatch m 15 20</i>, <i>stopwatch m 15 -5</i> = <i>stopwatch m 15 10</i>
+<i>stopwatch m 15 +5,3</i> = <i>stopwatch m 15 5,3</i> = <i>stopwatch m 15 20 25 30</i>
+<i>stopwatch m 15 -5,3</i> = <i>stopwatch m 15 10 5 0</i>
+Cycles with counters breaks if minutes&lt;0 or minutes&gt;59
+<i>stopwatch m 15 -5,3</i> = <i>stopwatch m 15 -5,10</i> = <i>stopwatch m 15 10 5 0</i>
+<i>stopwatch m 45 +5,2</i> = <i>stopwatch m 45 +5,10</i> = <i>stopwatch m 45 50 55</i>
+<i>stopwatch m +15</i> means shift 15 minutes from current time
+
+TIME MODE
+Use <i>stopwatch t 1545 1200</i>. Program plays sound when time = 1545 or time = 1200
+<i>stopwatch t 1545 +20</i> = <i>stopwatch t 1545 1605</i>, <i>stopwatch t 1545 -20</i> = <i>stopwatch t 1545 1525</i>
+<i>stopwatch t 1545 +13,2</i> or <i>stopwatch t 1545 13,2</i> means <i>stopwatch t 1545 1558 1611</i>
+<i>stopwatch t 1545 -14,2</i> means <i>stopwatch t 1545 1531 1517</i>
+Plus/minus values &gt;99 interprets as hours+minunes, for example +120 means 1hour+20minutes
+<i>stopwatch t 1545 +123</i> = <i>stopwatch t 1545 1708</i>, <i>stopwatch t 1545 -123</i> = <i>stopwatch t 1545 1422</i>
+It's possible to setup time for tomorrow
+<i>stopwatch t 1545+</i> = <i>stopwatch t 1545+1</i> setup time for tomorrow 1545
+<i>stopwatch t 1545+2</i> setup time for day after tomorrow 1545
+<i>stopwatch t 2300 +100,2</i> = <i>stopwatch t 2300 0+ 100+</i>
+Cycles with counters breaks if time&lt;=current time. For example now 1800
+<i>stopwatch t 2000 -100,12</i> = <i>stopwatch t 1900 2000</i> - cycle breaks when time became &lt;=1800
+<i>stopwatch t +15</i> means shift 15 minutes from current time
+
+FOR ANY MODE 
+Modifier 'm'  is allowed. It means minimize application on start. Example <i>stopwatch tm 1545</i>
+Order of parameters isn't important, one can use <i>stopwatch s 1 2 5</i> or <i>stopwatch s 5 2 1</i>
+Repeating values are allowed <i>stopwatch s 5 1 2 5 2</i>. All duplicate values will be excluded.
+#if move on computer with another screen resolution then size is automatically corrected on 2nd run

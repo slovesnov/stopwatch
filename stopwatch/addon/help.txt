@@ -1,0 +1,13 @@
+icon path
+http://www.iconarchive.com/show/crystal-clear-icons-by-everaldo/App-clock-2-icon.html
+
+several pngs to one ico
+http://icoconvert.com/Multi_Image_to_one_icon/
+
+error icon
+download from http://www.istartedsomething.com/20060924/vista-fitted-nearly-finished/ 
+(windows vista icons)
+then convert from ico to png
+
+help icon
+http://www.iconarchive.com/show/cristal-intense-icons-by-tatice/Help-icon.html

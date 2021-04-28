@@ -1,0 +1,25 @@
+#program reads this file automatically
+#tm 845 -20
+s 6000
+s 1 +30,6 6 +30,5 #my elbow plank hard
+#s 1 +15,6 +230 +30,5 #elbow plank original
+
+#for all days
+1-7 1505 2106
+1-5,7 908
+1-5 1731 1706 1906
+#for saturday
+6 650 1106 1904
+#for sunday
+7 730 1208 1904
+
+#special dates
+1.1
+8.3
+12.3
+11.11
+20.10.21 bank deposit
+27.10.21 bank deposit, перевести остатки на вклад со счета на который начислились проценты
+15.4.2024 bank deposit
+22.4.2024 bank deposit
+20.* electric meter reading

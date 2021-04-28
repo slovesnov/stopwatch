@@ -1,0 +1,51 @@
+window, dialog, messagedialog{
+	background-image:url('stopwatch/bg0.jpg');
+}
+
+messagedialog label{
+	font-size: 12pt;
+}
+
+.small{
+	font-size: 7.0pt;
+}
+
+.cerror{
+	color:rgb(225,0,0);
+}
+
+/*labels for dialog*/
+label{
+	color:rgb(0,0,0);
+}
+
+/*button label for "ok" button
+button for combobox
+*/
+button label, button{
+	color:rgb(255,255,255);
+	font-family: Tahoma;
+	font-size: 10pt;
+}
+
+button{
+	border-radius: .5em;
+	border: solid 1px #0076a3;
+	background: -gtk-gradient(linear, left top, left bottom, from(#00adee), to(#0078a5));
+	padding:4px;
+	text-shadow:none;
+}
+
+button:disabled{
+ 	border: solid 1px #222222;
+	background: -gtk-gradient(linear, left top, left bottom, from(#222222), to(#dddddd));
+}
+ 
+/* Theme button when the mouse pointer's on it, both are equivalent */
+button:hover {
+	background: -gtk-gradient(linear, left top, left bottom, from(#0078a5), to(#00adee));
+}
+
+button:hover:active{
+	background: -gtk-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+}

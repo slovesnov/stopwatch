@@ -1,0 +1,16 @@
+28apr2021{
+now use stopwatch.bat
+
+====== begin of stopwatch.vbs ======
+'aslov run stopwatch.exe without window
+CreateObject("Wscript.Shell").Run "stopwatch.exe", 1, True
+====== end of stopwatch.vbs ======
+}
+
+29jul2020{
+remove
+
+Repeating values are allowed <i>stopwatch s 5 1 2 5 2</i>. All duplicate values will be excluded.
+
+option only for stopwatch mode start immediately, may be empty string
+}
