@@ -34,10 +34,14 @@ void Base::sendMciCommand(const char *s) {
 }
 
 void Base::beep() {
-	sendMciCommand("Close All");
 	char b[128];
+
+	sendMciCommand("Close All");
 	sprintf(b, "Open %s/beep.mp3 Type MPEGVideo Alias theMP3", PROJECT);
 	sendMciCommand(b);
+
+	const short v=0x3000;//v is volume from 0 to 0xffff
+	waveOutSetVolume(0, v|(v<<16));//low word is left volume, high word is right volume
 
 	//originally was "Play theMP3 Wait". In this case program wait until sound finish play.
 	//If use "Play theMP3" command the function will be asynchronous

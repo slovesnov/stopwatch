@@ -5,11 +5,11 @@ s 1 +30,6 6 +30,5 #my elbow plank hard
 #s 1 +15,6 +230 +30,5 #elbow plank original
 
 #for all days
-1-7 1505 2106
+1-7 2106
 1-5,7 908
-1-5 1731 1706 1906
+1-5 1706 1906
 #for saturday
-6 650 1106 1904
+6 630 650 1106 1904
 #for sunday
 7 730 1208 1904
 
