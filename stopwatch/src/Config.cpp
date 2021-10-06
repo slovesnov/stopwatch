@@ -86,9 +86,8 @@ void Config::init(){
 				*var[i]=std::stoi(s);
 			}
 			else if(j==0){
-				if(!s.empty()){//s.empty() if stopwatch
+				if(!s.empty()){//s.empty() if was stopwatch mode
 					auto v = split(s, " ");
-					println("[%s]%d[%s]",s.c_str(),v.size(),v[0].c_str())
 					for (auto a : v) {
 						lastSetTime.insert(std::stoll(a));
 					}
