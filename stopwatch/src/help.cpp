@@ -32,11 +32,11 @@ void sendMciCommand(const char *s) {
 }
 
 void beep() {
-	char b[128];
+	std::string s;
 
 	sendMciCommand("Close All");
-	sprintf(b, "Open %s/beep.mp3 Type MPEGVideo Alias theMP3", getApplicationName().c_str());
-	sendMciCommand(b);
+	s= "Open "+getResourcePath("beep.mp3")+" Type MPEGVideo Alias theMP3";
+	sendMciCommand(s.c_str());
 
 	const short v=0x3000;//v is volume from 0 to 0xffff
 	waveOutSetVolume(0, v|(v<<16));//low word is left volume, high word is right volume

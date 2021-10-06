@@ -81,14 +81,17 @@ void Config::init(){
 		for(auto a:m){
 			i=INDEX_OF(a.first,CONFIG_TAGS);
 			j=i-sz;
+			s=a.second;
 			if(j<0){
-				*var[i]=std::stoi(a.second);
+				*var[i]=std::stoi(s);
 			}
 			else if(j==0){
-				auto v = split(a.second, " ");
-				assert(v.size() > 0);
-				for (auto a : v) {
-					lastSetTime.insert(std::stoll(a));
+				if(!s.empty()){//s.empty() if stopwatch
+					auto v = split(s, " ");
+					println("[%s]%d[%s]",s.c_str(),v.size(),v[0].c_str())
+					for (auto a : v) {
+						lastSetTime.insert(std::stoll(a));
+					}
 				}
 			}
 			else{
