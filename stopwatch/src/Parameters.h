@@ -11,7 +11,7 @@
 #ifndef PARAMETERS_H_
 #define PARAMETERS_H_
 
-#include "Base.h"
+#include "help.h"
 #include "DateTime.h"
 #include <set>
 
@@ -19,7 +19,7 @@ enum class StringType {
 	FRAME, DIALOG, ENTRY
 };
 
-class Parameters: public Base {
+class Parameters {
 	VString arg;
 	bool _minimize; //has minimize() function so use another name
 	static std::set<int> predefinedTime[8]; //used in Frame & Dialog so static
@@ -41,6 +41,8 @@ class Parameters: public Base {
 	static void staticInit(const char*file);
 
 public:
+	static const char* TITLE[int(Mode::MODE_SIZE)];
+
 	/* for stopwatch mode beepTime = seconds
 	 * for minute mode beepTime = minutes
 	 * for time mode beepTime = YYYYMMDDHHMM

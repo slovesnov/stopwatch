@@ -13,6 +13,9 @@
 
 struct Point {
 	int x, y;
+	bool operator !=(const Point& p){
+		return x!=p.x || y!=p.y;
+	}
 };
 
 #endif /* POINT_H_ */

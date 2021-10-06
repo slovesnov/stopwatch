@@ -124,7 +124,7 @@ void Frame::show() {
 			else { //window isn't iconified can check&modify areaSize right now
 				auto size = maxAreaSize;
 				countAreaSize(window);
-				if (notEqual(size, maxAreaSize)) {
+				if (size!= maxAreaSize) {
 					//window isn't iconified & showed so just call moveSizeWindow()
 					moveSizeWindow();
 				}
@@ -437,7 +437,7 @@ void Frame::draw() {
 			//before count fs[]
 			auto as = maxAreaSize;
 			countAreaSize(window);
-			if (notEqual(as, maxAreaSize)) {
+			if (as!= maxAreaSize) {
 				cairo_surface_destroy(surface);
 				cairo_destroy(cr);
 				surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, maxAreaSize.x,
@@ -716,7 +716,7 @@ void Frame::setIcon() {
 	p = gdk_pixbuf_get_from_surface(surface, 0, 0, 32, 32);
 	l = g_list_append(l, p);
 
-	s = format("%s/16.png", PROJECT);
+	s = getImagePath("16.png");
 	p = gdk_pixbuf_new_from_file(s.c_str(), 0);
 	l = g_list_append(l, p);
 

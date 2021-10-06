@@ -1,3 +1,7 @@
+6oct2021{
+use aslov lib
+}
+
 28apr2021{
 now use stopwatch.bat
 

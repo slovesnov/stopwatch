@@ -19,9 +19,7 @@ public:
 	int width, height;
 	bool isotropic;
 	std::string toString() const;
+	void fromString(std::string const&s);
 };
-
-std::ostream& operator<<(std::ostream&, DigitalFontParameters const&);
-std::istream& operator>>(std::istream&, DigitalFontParameters&);
 
 #endif /* DIGITALFONTPARAMETERS_H_ */

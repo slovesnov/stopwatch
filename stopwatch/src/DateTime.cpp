@@ -20,7 +20,7 @@ DateTime::DateTime(int time, int addDays) :
 	else {
 		init(g_date_time_add_days(DateTime().d, addDays));
 	}
-	init(format("%FT") + Base::format("%04d00", time));
+	init(format("%FT") + ::format("%04d00", time));
 }
 
 int DateTime::diffDays(BeepTimeType v) {

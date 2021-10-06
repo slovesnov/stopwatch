@@ -105,9 +105,7 @@ void EditSettingsFileDialog::buttonClicked(GtkWidget* w) {
 	std::string s = gtk_text_buffer_get_text(buffer, &start, &end, TRUE);
 
 	if (loadPredefined(s)) {
-		std::ofstream f(getPredefinedFileName());
-		assert(f.is_open());
-		f << s;
+		writableFileSetContents(getPredefinedFileName(), s);
 		gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 	}
 	else {

@@ -12,13 +12,14 @@
 #define CONFIG_H_
 
 #include <set>
-#include "Base.h"
 #include "DigitalFontParameters.h"
+#include "help.h"
 
 const int DEFAULT_TIME_ZONE = 100;
 
-class Config: public Base {
+class Config {
 public:
+
 	GTimeZone *tz;
 	Point captionsSize;
 	int timeZone;
@@ -30,11 +31,11 @@ public:
 	bool read;
 
 	Config();
-
 	~Config() {
 		g_time_zone_unref(tz);
 	}
 
+	void init();
 	void write();
 
 	VString getArguments() const;

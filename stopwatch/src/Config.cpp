@@ -11,8 +11,52 @@
 #include "Frame.h"
 #include "Config.h"
 
+#include <windows.h>//ERROR has in windows & in DialogType
+
+const std::string CONFIG_TAGS[]={
+	"captionsSize.x",
+	"captionsSize.y",
+	"timeZone",
+	"digitalMode",
+	"closeWarning",
+	"additionalHeight",
+	"lastSetTime",
+	"maxDigitalClockSize(time)",
+	"maxDigitalClockSize(stopwatch)",
+};
+
 Config::Config() {
-	unsigned i;
+//	char buffer[MAX_PATH];
+//	GetModuleFileName( NULL, buffer, MAX_PATH );
+//	printl(buffer);
+/*
+	//char*aa[]={buffer};
+	//printl(aa[0])
+	int argc=1;
+	char* argv[]={buffer};
+	gtk_init(&argc, &argv); //do not remove
+	aslovInit(buffer);
+	printl(getWorkingDirectory())
+*/
+
+	timeZone=3;
+
+	/* set timezone in config file because got invalid time for
+	 * in summer for Moscow (actually no saving daylight)
+	 * For Moscow use "3" which means utc+3 without daylight savings
+	 */
+	if (timeZone == DEFAULT_TIME_ZONE) {
+		tz = g_time_zone_new_local();
+	}
+	else {
+		//3 is full width with sign
+		std::string s = format("%+03d", timeZone);
+		tz = g_time_zone_new_identifier(s.c_str());
+	}
+}
+
+void Config::init(){
+	int i,j;
 	std::string s;
 
 	timeZone = DEFAULT_TIME_ZONE;
@@ -28,38 +72,33 @@ Config::Config() {
 			&digitalMode,
 			&closeWarning,
 			&additionalHeight };
-	int**p = var;
+	const int sz=SIZEI(var);
 
-	std::ifstream f = Base::open(".cfg", false); //Note if do auto f=open... eclipse don't see is_open() method
-	read = f.is_open();
+	MapStringString m;
+	MapStringString::iterator it;
+	read=loadConfig(m);
 	if (read) {
-		for (i = 0; i < G_N_ELEMENTS(var); i++, p++) {
-			f >> s >> s >> **p;
-		}
-
-		f >> s >> s; //read "lastSetTime" & "="
-		std::getline(f, s);
-		auto v = split(s, " ");
-		assert(v.size() > 1);
-		v.erase(v.begin()); //remove very 1st element
-//		println("%d",v.size())
-//		for(auto q:v){
-//			println("[%s]",q.c_str())
-//		}
-		if (v.size() == 1 && v[0].empty()) {
-//			printinfo
-		}
-		else {
-//			printinfo
-			for (auto a : v) {
-				lastSetTime.insert(stoll(a));
+		for(auto a:m){
+			i=INDEX_OF(a.first,CONFIG_TAGS);
+			j=i-sz;
+			if(j<0){
+				*var[i]=std::stoi(a.second);
+			}
+			else if(j==0){
+				auto v = split(a.second, " ");
+				assert(v.size() > 0);
+				for (auto a : v) {
+					lastSetTime.insert(std::stoll(a));
+				}
+			}
+			else{
+				assert(j<SIZE(maxDigitalClockSize));
+				maxDigitalClockSize[j].fromString(a.second);
 			}
 		}
-
-		for (auto&d : maxDigitalClockSize) {
-			f >> s >> s >> d;
-		}
 	}
+
+	//printl(timeZone);
 
 	/* set timezone in config file because got invalid time for
 	 * in summer for Moscow (actually no saving daylight)
@@ -79,16 +118,6 @@ Config::Config() {
 void Config::write() {
 	std::string s;
 	int i;
-	std::ofstream f(Base::fullName(".cfg"));
-#define A(s,v) f<<s<<" = "<<v<<std::endl;
-#define B(v) A(#v,v)
-	B(captionsSize.x)
-	B(captionsSize.y)
-	A("timeZone", timeZone)
-	B(digitalMode)
-	B(closeWarning)
-	B(additionalHeight)
-
 	if (frame.isTime() && !frame.beepTime.empty()) {
 		i = 0;
 		for (auto v : frame.beepTime) {
@@ -101,14 +130,18 @@ void Config::write() {
 	else {
 		s = "";
 	}
-	A("lastSetTime", s)
-#undef A
-#undef B
-	i = 0;
-	const std::string NAME[] = { "time", "stopwatch" };
-	for (auto&v : maxDigitalClockSize) {
-		f << "maxDigitalClockSize(" << NAME[i++] << ") = " << v << std::endl;
-	}
+
+	WRITE_CONFIG(CONFIG_TAGS,
+			captionsSize.x,
+			captionsSize.y,
+			timeZone,
+			digitalMode,
+			closeWarning,
+			additionalHeight,
+			s,
+			maxDigitalClockSize[0].toString(),
+			maxDigitalClockSize[1].toString()
+	);
 
 }
 

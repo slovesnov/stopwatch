@@ -9,12 +9,10 @@
  */
 
 #include "Frame.h"
-#include "Base.h"
+#include "help.h"
 #include <windows.h>
 
-const char* Base::TITLE[] = { "stopwatch", "minute", "time" };
-
-double Base::getVerticalDPI() {
+double getVerticalDPI() {
 	auto monitor = gdk_display_get_monitor(gdk_display_get_default(), 0);
 	GdkRectangle r;
 	gdk_monitor_get_geometry(monitor, &r);
@@ -22,7 +20,7 @@ double Base::getVerticalDPI() {
 	return r.height * 25.4 / h;
 }
 
-void Base::sendMciCommand(const char *s) {
+void sendMciCommand(const char *s) {
 #ifdef NDEBUG
 	mciSendString(s, NULL, 0, 0);
 #else
@@ -33,11 +31,11 @@ void Base::sendMciCommand(const char *s) {
 #endif
 }
 
-void Base::beep() {
+void beep() {
 	char b[128];
 
 	sendMciCommand("Close All");
-	sprintf(b, "Open %s/beep.mp3 Type MPEGVideo Alias theMP3", PROJECT);
+	sprintf(b, "Open %s/beep.mp3 Type MPEGVideo Alias theMP3", getApplicationName().c_str());
 	sendMciCommand(b);
 
 	const short v=0x3000;//v is volume from 0 to 0xffff
@@ -48,41 +46,13 @@ void Base::beep() {
 	sendMciCommand("Play theMP3");
 }
 
-VString Base::split(const std::string& subject, const std::string& separator) {
-	VString r;
-	size_t pos, prev;
-	for (prev = 0; (pos = subject.find(separator, prev)) != std::string::npos;
-			prev = pos + separator.length()) {
-		r.push_back(subject.substr(prev, pos - prev));
-	}
-	r.push_back(subject.substr(prev, subject.length()));
-	return r;
-}
-
-std::string Base::format(const char* _format, ...) {
-	va_list args;
-	va_start(args, _format);
-	size_t size = vsnprintf(nullptr, 0, _format, args) + 1;
-	std::string s;
-	s.resize(size);
-	vsnprintf(&s[0], size, _format, args);
-	s.resize(size - 1);
-	va_end(args);
-	return s;
-}
-
-std::string Base::shortFileName(const char*file) {
-	const char*p = strrchr(file, G_DIR_SEPARATOR);
-	return p ? p + 1 : file;
-}
-
-bool Base::has(const VPredefinedDateType& v, int i) {
+bool has(const VPredefinedDateType& v, int i) {
 	auto a = std::find_if(v.cbegin(), v.cend(),
 			[&] (auto e) {return e.first==i;});
 	return a != v.cend();
 }
 
-bool Base::comparePredefinedDate(const PredefinedDateType& a,
+bool comparePredefinedDate(const PredefinedDateType& a,
 		const PredefinedDateType& b) {
 	auto amd = getMMDD(a.first);
 	auto bmd = getMMDD(b.first);
@@ -99,11 +69,10 @@ bool Base::comparePredefinedDate(const PredefinedDateType& a,
 
 #ifdef BASE_ADDONS
 
-typedef std::vector<std::string> VString;
 typedef VString::iterator VStringI;
 typedef VString::const_iterator VStringCI;
 
-void Base::exploreAllChildrenRecursive(GtkWidget* w) {
+void exploreAllChildrenRecursive(GtkWidget* w) {
 	std::string s,q;
 	VString v;
 	VStringCI it;
@@ -144,3 +113,28 @@ void Base::exploreAllChildrenRecursive(GtkWidget* w) {
 
 }
 #endif
+
+double secondsSince(clock_t t) {
+	return double(clock() - t) / CLOCKS_PER_SEC;
+}
+
+int getYYYYMMDD(BeepTimeType v) {
+	return v / BTDIVISOR;
+}
+
+int getHHMM(BeepTimeType v) {
+	return v % BTDIVISOR;
+}
+
+int getYYYY(int v) {
+	return v / MMDDDIVISOR;
+}
+int getMM(int v) {
+	return getMMDD(v) / MMDIVISOR;
+}
+int getDD(int v) {
+	return getMMDD(v) % MMDIVISOR;
+}
+int getMMDD(int v) {
+	return v % MMDDDIVISOR;
+}

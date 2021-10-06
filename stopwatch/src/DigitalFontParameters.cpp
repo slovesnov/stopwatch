@@ -8,17 +8,15 @@
  *         Homepage: slovesnov.users.sourceforge.net
  */
 
-#include "Base.h"
 #include "DigitalFontParameters.h"
-
-std::ostream& operator <<(std::ostream& o, const DigitalFontParameters& p) {
-	return o << p.toString();
-}
-
-std::istream& operator >>(std::istream& i, DigitalFontParameters& p) {
-	return i >> p.width >> p.height >> p.isotropic;
-}
+#include "help.h"
 
 std::string DigitalFontParameters::toString() const {
-	return Base::format("%d %d %d", width, height, isotropic);
+	return format("%d %d %d", width, height, isotropic);
+}
+
+void DigitalFontParameters::fromString(std::string const&s){
+	int i;
+	sscanf(s.c_str(),"%d %d %d", &width, &height, &i);
+	isotropic= i!=0;
 }

@@ -11,10 +11,10 @@
 #ifndef DATETIME_H_
 #define DATETIME_H_
 
-#include "Base.h"
+#include "help.h"
 #include <algorithm>
 
-class DateTime: public Base {
+class DateTime{
 	GDateTime *d;
 	void init(GDateTime*p) {
 		if (d) {
@@ -46,7 +46,7 @@ public:
 
 	DateTime(int day, int month, int year) :
 			d(0) {
-		init(Base::format("%4d%02d%02dT000000", year, month, day));
+		init(::format("%4d%02d%02dT000000", year, month, day));
 	}
 
 	DateTime(int time, int addDays);
@@ -88,7 +88,7 @@ public:
 
 	void fromBeepTime(BeepTimeType v) {
 		//time can be <1000 so use %04d
-		init(Base::format("%dT%04d00", getYYYYMMDD(v), getHHMM(v)));
+		init(::format("%dT%04d00", getYYYYMMDD(v), getHHMM(v)));
 	}
 
 	/* return difference in days *this-v

@@ -26,17 +26,13 @@ Config config;
 Frame frame;
 
 int main(int argc, char *argv[]) {
-	char b[128];
 	gtk_init(&argc, &argv); //do not remove
+	aslovInit(argv);
+
+	config.init();
 
 	//load css before possible show start dialog
-	GtkCssProvider *provider = gtk_css_provider_new();
-	GdkScreen *screen = gdk_display_get_default_screen(gdk_display_get_default());
-	gtk_style_context_add_provider_for_screen(screen,
-			GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-	sprintf(b, "%s.css", PROJECT);
-	gtk_css_provider_load_from_path(provider, b, NULL);
-	g_object_unref(provider);
+	loadCSS();
 
 	if (!frame.prepare(*argv)) {
 		Dialog d(DialogType::ERROR, frame.what());

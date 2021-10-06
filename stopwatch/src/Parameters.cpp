@@ -18,6 +18,7 @@ std::set<int> Parameters::predefinedTime[8];
 VString Parameters::predefinedSet;
 VPredefinedDateType Parameters::predefinedDate;
 std::string Parameters::infoString;
+const char* Parameters::TITLE[] = { "stopwatch", "minute", "time" };
 
 bool Parameters::parse(int argc, char *argv[]) {
 	arg.clear(); //may be not empty from previous errors
@@ -28,7 +29,7 @@ bool Parameters::parse(int argc, char *argv[]) {
 }
 
 #define ASSERT_FULL(c,m,a,t) if(!(c)){message=m;condition=#c;line=__LINE__;\
-	file=shortFileName(__FILE__);errorType=t;argument=a;return false;}
+	file=getFileInfo(__FILE__, FILEINFO::NAME);errorType=t;argument=a;return false;}
 #define ASSERT(c,m,a) ASSERT_FULL(c,m,a,0)
 #define ASSERT1(c,m) ASSERT(c,m,-1)
 #define ASSERT_TIME_FULL(t,a,type) \
@@ -87,7 +88,7 @@ bool Parameters::parse(bool predefined) {
 		i++;
 	}
 	mode = Mode(i);
-	ASSERT(mode != Mode::SIZE, "unknown mode", 0)
+	ASSERT(mode != Mode::MODE_SIZE, "unknown mode", 0)
 
 	//after mode is set
 	i = strlen(p);
@@ -435,10 +436,7 @@ std::string Parameters::beepTimeFormat(BeepTimeType v, bool icon) const {
 #define ASSERT_TIME_LINE(t) ASSERT_TIME_FULL(t,fileline,1)
 
 std::string Parameters::getPredefinedFileContent() {
-	auto f = open(PREDEFINED_FILE_NAME);
-	std::stringstream content;
-	content << f.rdbuf();
-	return content.str();
+	return writableFileGetContents(getPredefinedFileName());
 }
 
 bool Parameters::loadPredefined(std::string const & data) {
@@ -871,6 +869,6 @@ void Parameters::removeUntilTime(std::set<BeepTimeType>& b,
 	b.erase(b.begin(), it);
 }
 
-std::string Parameters::getPredefinedFileName() {
-	return fullName(PREDEFINED_FILE_NAME);
+std::string Parameters::getPredefinedFileName(){
+	return getApplicationName() + PREDEFINED_FILE_NAME;
 }

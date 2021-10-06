@@ -25,8 +25,8 @@ const char* DIALOG_TITLE[] = {
 		"error",
 		"Success reload" };
 const char* DIALOG_ICON[] = { "128", "error", "48" };
-static_assert(G_N_ELEMENTS(DIALOG_TITLE)==unsigned(DialogType::SIZE));
-static_assert(G_N_ELEMENTS(DIALOG_TITLE)==G_N_ELEMENTS(DIALOG_ICON));
+static_assert(SIZEI(DIALOG_TITLE)==int(DialogType::DIALOG_TYPE_SIZE));
+static_assert(SIZEI(DIALOG_TITLE)==SIZEI(DIALOG_ICON));
 
 //same name function in Frame.cpp so make it static
 static void button_clicked(GtkWidget *w, gpointer) {
@@ -128,7 +128,7 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		gtk_container_add(GTK_CONTAINER(w2), comboPredefinedSet);
 	}
 
-	s = format("%s/%s.png", PROJECT, DIALOG_ICON[int(dt)]);
+	s = getImagePath(DIALOG_ICON[int(dt)]+std::string(".png" ));
 	auto image = gtk_image_new_from_file(s.c_str());
 	gtk_box_pack_start(GTK_BOX(w2), image, TRUE, TRUE, 0); //fill
 
@@ -136,7 +136,7 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		w3 = gtk_label_new("click on button below\nto see full online help");
 		gtk_container_add(GTK_CONTAINER(w2), w3);
 
-		s = format("%s/help.png", PROJECT);
+		s = getImagePath("help.png");
 		auto image = gtk_image_new_from_file(s.c_str());
 		helpButton = gtk_button_new();
 		gtk_button_set_image(GTK_BUTTON(helpButton), image);
@@ -183,7 +183,7 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 
 	w3 = gtk_label_new(nullptr);
 	if (dt == DialogType::PARAMETERS) {
-		auto f = open("Help.txt");
+		auto f = openResourceFileAsStream("help.txt");
 		s.clear();
 		while (std::getline(f, q)) {
 			if (q[0] == '#') {
