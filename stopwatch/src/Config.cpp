@@ -56,7 +56,8 @@ Config::Config() {
 }
 
 void Config::init(){
-	int i,j;
+	int i,j,k;
+	int64_t ll;
 	std::string s;
 
 	timeZone = DEFAULT_TIME_ZONE;
@@ -83,13 +84,17 @@ void Config::init(){
 			j=i-sz;
 			s=a.second;
 			if(j<0){
-				*var[i]=std::stoi(s);
+				if(stringToInt(s, k)){
+					*var[i]=k;
+				}
 			}
 			else if(j==0){
 				if(!s.empty()){//s.empty() if was stopwatch mode
 					auto v = split(s, " ");
 					for (auto a : v) {
-						lastSetTime.insert(std::stoll(a));
+						if(stringToLL(a, ll)){
+							lastSetTime.insert(ll);
+						}
 					}
 				}
 			}
