@@ -11,8 +11,6 @@
 #include "Frame.h"
 #include "Config.h"
 
-#include <windows.h>//ERROR has in windows & in DialogType
-
 const std::string CONFIG_TAGS[]={
 	"captionsSize.x",
 	"captionsSize.y",

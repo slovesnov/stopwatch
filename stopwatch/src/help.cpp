@@ -10,7 +10,8 @@
 
 #include "Frame.h"
 #include "help.h"
-#include <windows.h>
+
+#include <windows.h>//ERROR has in windows & in DialogType, so include after help.h
 
 double getVerticalDPI() {
 	auto monitor = gdk_display_get_monitor(gdk_display_get_default(), 0);
