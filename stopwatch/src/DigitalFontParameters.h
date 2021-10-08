@@ -12,14 +12,16 @@
 #define DIGITALFONTPARAMETERS_H_
 
 #include "Point.h"
-#include <string>
 
 class DigitalFontParameters {
 public:
 	int width, height;
 	bool isotropic;
-	std::string toString() const;
+	//std::string toString() const;
 	void fromString(std::string const&s);
 };
+
+std::ostream& operator<<(std::ostream&, DigitalFontParameters const&);
+//std::istream& operator>>(std::istream&, DigitalFontParameters&);
 
 #endif /* DIGITALFONTPARAMETERS_H_ */

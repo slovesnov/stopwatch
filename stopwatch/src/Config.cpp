@@ -12,8 +12,7 @@
 #include "Config.h"
 
 const std::string CONFIG_TAGS[]={
-	"captionsSize.x",
-	"captionsSize.y",
+	"captionsSize",
 	"timeZone",
 	"digitalMode",
 	"closeWarning",
@@ -65,8 +64,7 @@ void Config::init(){
 	maxDigitalClockSize[1]= {1800,1800,false};
 
 	int* var[] = {
-			&captionsSize.x,
-			&captionsSize.y,
+			nullptr,
 			&timeZone,
 			&digitalMode,
 			&closeWarning,
@@ -81,12 +79,17 @@ void Config::init(){
 			i=INDEX_OF(a.first,CONFIG_TAGS);
 			j=i-sz;
 			s=a.second;
-			if(j<0){
+			if(i==0){
+//				printl(s,captionsSize.x,captionsSize.y)
+				captionsSize.fromString(s);
+//				printl(captionsSize.x,captionsSize.y)
+			}
+			else if(i<sz){
 				if(stringToInt(s, k)){
 					*var[i]=k;
 				}
 			}
-			else if(j==0){
+			else if(i==sz){
 				if(!s.empty()){//s.empty() if was stopwatch mode
 					auto v = split(s, " ");
 					for (auto a : v) {
@@ -98,7 +101,7 @@ void Config::init(){
 			}
 			else{
 				assert(j<SIZE(maxDigitalClockSize));
-				maxDigitalClockSize[j].fromString(a.second);
+				maxDigitalClockSize[j].fromString(s);
 			}
 		}
 	}
@@ -137,15 +140,14 @@ void Config::write() {
 	}
 
 	WRITE_CONFIG(CONFIG_TAGS,
-			captionsSize.x,
-			captionsSize.y,
+			captionsSize,
 			timeZone,
 			digitalMode,
 			closeWarning,
 			additionalHeight,
 			s,
-			maxDigitalClockSize[0].toString(),
-			maxDigitalClockSize[1].toString()
+			maxDigitalClockSize[0],
+			maxDigitalClockSize[1]
 	);
 
 }

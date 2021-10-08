@@ -9,14 +9,22 @@
  */
 
 #include "DigitalFontParameters.h"
-#include "help.h"
+#include "aslov.h"
 
-std::string DigitalFontParameters::toString() const {
-	return format("%d %d %d", width, height, isotropic);
-}
+//std::string DigitalFontParameters::toString() const {
+//	return format("%d %d %d", width, height, isotropic);
+//}
 
 void DigitalFontParameters::fromString(std::string const&s){
 	int i;
 	sscanf(s.c_str(),"%d %d %d", &width, &height, &i);
 	isotropic= i!=0;
 }
+
+std::ostream& operator <<(std::ostream& o, const DigitalFontParameters& p) {
+	return o << join(p.width,p.height,p.isotropic);
+}
+
+//std::istream& operator >>(std::istream& i, DigitalFontParameters& p) {
+//	return i >> p.width >> p.height >> p.isotropic;
+//}
