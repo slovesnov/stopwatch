@@ -85,7 +85,7 @@ void Config::init(){
 //				printl(captionsSize.x,captionsSize.y)
 			}
 			else if(i<sz){
-				if(stringToInt(s, k)){
+				if(parseString(s, k)){
 					*var[i]=k;
 				}
 			}
@@ -93,7 +93,7 @@ void Config::init(){
 				if(!s.empty()){//s.empty() if was stopwatch mode
 					auto v = split(s, " ");
 					for (auto a : v) {
-						if(stringToLL(a, ll)){
+						if(parseString(a, ll)){
 							lastSetTime.insert(ll);
 						}
 					}

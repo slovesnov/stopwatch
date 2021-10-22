@@ -752,8 +752,7 @@ void Parameters::staticInit(const char*file) {
 	 * not always working, because this file sometimes isn't changed
 	 * */
 	d.initTimeZone(v);
-	infoString = format("gcc %s, gtk %d.%d.%d\n", __VERSION__, GTK_MAJOR_VERSION,
-	GTK_MINOR_VERSION, GTK_MICRO_VERSION) + s
+	infoString = getVersionString(false) +"\n"+ s
 			+ d.format("build %d %b %Y %H:%M:%S");
 
 }

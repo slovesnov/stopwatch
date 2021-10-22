@@ -83,10 +83,10 @@ void exploreAllChildrenRecursive(GtkWidget* w) {
 
 	for(iter = children; iter != NULL; iter = g_list_next(iter)) {
 		w=GTK_WIDGET(iter->data);
-		printinfo
+		printi
 
 		if(GTK_IS_CONTAINER(w)) {
-			printinfo
+			printi
 			GList* ch = gtk_container_get_children(GTK_CONTAINER(w));
 			if( g_list_length (ch) > 7 ) {
 			}
@@ -99,7 +99,7 @@ void exploreAllChildrenRecursive(GtkWidget* w) {
 			v=split(s," ");
 			q="";
 			for(it=v.begin();it!=v.end();it++) {
-				printinfo
+				printi
 				p=strchr(it->c_str(),':');
 				assert(p);
 				q+=it->substr(0,p-it->c_str());
