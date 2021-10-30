@@ -37,7 +37,6 @@ const int MMDIVISOR = 100;
 
 double secondsSince(clock_t t);
 
-double getVerticalDPI();
 void beep();
 
 #ifdef BASE_ADDONS

@@ -275,17 +275,14 @@ void Frame::draw() {
 	const std::string so = s;
 
 	const double FONT_HEIGHT = 10.5;
-	const int FONT_HEIGHT_PIXELS = FONT_HEIGHT * getVerticalDPI() / 72;
+	const double FONT_HEIGHT_PIXELS = convertFontSize(FONT_HEIGHT,true);
 	if (stopwatch) {
 		//need set for digit mode
 		cairo_select_font_face(cr, "Times New Roman", CAIRO_FONT_SLANT_NORMAL,
 				CAIRO_FONT_WEIGHT_NORMAL);
 
-		sprintf(b, "Press any key to start/clear stopwatch");
 		cairo_set_font_size(cr, FONT_HEIGHT_PIXELS); //height in pixels
-		cairo_text_extents(cr, b, &e);
-		cairo_move_to(cr, -e.x_bearing + 1, -e.y_bearing + 1);
-		cairo_show_text(cr, b);
+		drawTextToCairo(cr, "Press any key to start/clear stopwatch", 0, 0, DRAW_TEXT_BEGIN, DRAW_TEXT_BEGIN);
 	}
 
 	PangoLayout *layout;

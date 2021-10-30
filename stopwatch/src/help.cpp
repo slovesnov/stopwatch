@@ -13,14 +13,6 @@
 
 #include <windows.h>//ERROR has in windows & in DialogType, so include after help.h
 
-double getVerticalDPI() {
-	auto monitor = gdk_display_get_monitor(gdk_display_get_default(), 0);
-	GdkRectangle r;
-	gdk_monitor_get_geometry(monitor, &r);
-	auto h = gdk_monitor_get_height_mm(monitor);
-	return r.height * 25.4 / h;
-}
-
 void sendMciCommand(const char *s) {
 #ifdef NDEBUG
 	mciSendString(s, NULL, 0, 0);
