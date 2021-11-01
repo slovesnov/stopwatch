@@ -274,21 +274,21 @@ void Frame::draw() {
 	}
 	const std::string so = s;
 
-	const double FONT_HEIGHT = 10.5;
-	const double FONT_HEIGHT_PIXELS = convertFontSize(FONT_HEIGHT,true);
+	//20.728
+	const double FONT_HEIGHT_PIXELS = 20;
 	if (stopwatch) {
 		//need set for digit mode
 		cairo_select_font_face(cr, "Times New Roman", CAIRO_FONT_SLANT_NORMAL,
 				CAIRO_FONT_WEIGHT_NORMAL);
 
 		cairo_set_font_size(cr, FONT_HEIGHT_PIXELS); //height in pixels
-		drawTextToCairo(cr, "Press any key to start/clear stopwatch", 0, 0, DRAW_TEXT_BEGIN, DRAW_TEXT_BEGIN);
+		drawText(cr, "Press any key to start/clear stopwatch", 0, 0, DRAW_TEXT_BEGIN, DRAW_TEXT_BEGIN);
 	}
 
 	PangoLayout *layout;
 	layout = pango_cairo_create_layout(cr);
-	sprintf(b, "Times New Roman, %.1lf", FONT_HEIGHT); //in logical units
-	PangoFontDescription*desc = pango_font_description_from_string(b);
+	PangoFontDescription*desc = pango_font_description_from_string("Times New Roman, 12");
+	pango_font_description_set_absolute_size (desc, FONT_HEIGHT_PIXELS * PANGO_SCALE);
 	pango_layout_set_font_description(layout, desc);
 
 	int maxTextHeight = 0;
