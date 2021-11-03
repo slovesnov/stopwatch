@@ -54,4 +54,6 @@ int getMM(int v);
 int getDD(int v);
 int getMMDD(int v);
 
+bool yesNoDialog(std::string text);
+
 #endif /* HELP_H_ */

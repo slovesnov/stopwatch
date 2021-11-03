@@ -20,7 +20,6 @@
 #include "DigitalFont.h"
 
 class Frame: public Parameters {
-	GtkWidget*window = NULL;
 	GtkWidget *area[3], *box, *button[2];
 	Point maxAreaSize = { 0, 0 }; //indicator that countAreaSize isn't called
 	clock_t startTime = 0;
@@ -33,6 +32,7 @@ class Frame: public Parameters {
 	std::string lastIconString;
 	int lastIconColorIndex = -1;
 public:
+	GtkWidget*window = NULL;
 
 	void startTimer();
 	void moveSizeWindow(bool b = true);

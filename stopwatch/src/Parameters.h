@@ -56,10 +56,11 @@ public:
 	DateTime setupTime;
 
 	bool loadPredefined() {
-		return loadPredefined(getPredefinedFileContent());
+		return loadPredefined(getPredefinedFileContents());
 	}
 	bool loadPredefined(std::string const & data);//no static because store error message
-	std::string getPredefinedFileContent();
+	std::string getPredefinedFileContents();
+	void setPredefinedFileContents(std::string const&s);
 
 	static std::string getPredefinedTimeString(
 			DialogType dt = DialogType::PARAMETERS);

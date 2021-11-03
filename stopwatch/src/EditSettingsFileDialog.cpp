@@ -52,7 +52,7 @@ EditSettingsFileDialog::EditSettingsFileDialog(GtkWidget *parent) {
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(parent));
 
-	s = getPredefinedFileContent();
+	s = getPredefinedFileContents();
 	gtk_text_buffer_set_text(buffer, s.c_str(), -1);
 
 	button = gtk_button_new_with_label(
@@ -105,7 +105,7 @@ void EditSettingsFileDialog::buttonClicked(GtkWidget* w) {
 	std::string s = gtk_text_buffer_get_text(buffer, &start, &end, TRUE);
 
 	if (loadPredefined(s)) {
-		writableFileSetContents(getPredefinedFileName(), s);
+		setPredefinedFileContents(s);
 		gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 	}
 	else {

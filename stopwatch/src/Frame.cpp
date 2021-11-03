@@ -44,14 +44,7 @@ gboolean on_widget_deleted(GtkWindow *widget, GdkEvent *event, gpointer data) {
 		return FALSE;
 	}
 
-	auto dialog = gtk_message_dialog_new(widget, GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "Do you really want to exit?");
-	gtk_window_set_title(GTK_WINDOW(dialog), "Question");
-	int r = gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(dialog);
-
-	//r={GTK_RESPONSE_DELETE_EVENT, GTK_RESPONSE_NO, GTK_RESPONSE_YES}
-	return r != GTK_RESPONSE_YES;
+	return !yesNoDialog("Do you really want to exit?");
 }
 
 gboolean time_function(gpointer) {

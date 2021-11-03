@@ -435,8 +435,12 @@ std::string Parameters::beepTimeFormat(BeepTimeType v, bool icon) const {
 #define ASSERT_LINE(c,m) ASSERT_FULL(c,m,fileline,1)
 #define ASSERT_TIME_LINE(t) ASSERT_TIME_FULL(t,fileline,1)
 
-std::string Parameters::getPredefinedFileContent() {
+std::string Parameters::getPredefinedFileContents() {
 	return writableFileGetContents(getPredefinedFileName());
+}
+
+void Parameters::setPredefinedFileContents(std::string const&s){
+	writableFileSetContents(getPredefinedFileName(), s);
 }
 
 bool Parameters::loadPredefined(std::string const & data) {
@@ -453,8 +457,9 @@ bool Parameters::loadPredefined(std::string const & data) {
 	VPredefinedDateType pDate;
 	DateTime dt;
 	std::vector<int> vi;
+	std::vector<int> vskiplines;
 	const int ANY_MONTH = 0;
-
+	VString vo;
 	VString vd = split(data, "\n");
 	fileline = 0;
 	for (auto ss : vd) {
@@ -551,8 +556,14 @@ bool Parameters::loadPredefined(std::string const & data) {
 
 			i = d[0] + (d[1] + d[2] * 100) * 100;
 			j = getYYYYMMDD(dt.toBeepTime());
-			if (d[1] != ANY_MONTH && d[2] != 0) { //special year is set
-				ASSERT_LINE(i >= j, "set date which already past");
+			if (d[1] != ANY_MONTH && d[2] != 0 && i<j) { //special year is set
+				if(yesNoDialog("set date which already past skip it?\n"+ss+"\nIf you skip all past dates then file will be rewritten.")){
+					vskiplines.push_back(fileline);
+					continue;
+				}
+				else{
+					ASSERT_LINE(i>=j, "set date which already past");
+				}
 			}
 			ASSERT_LINE(!has(pDate, i), "repeat predefined parameter [" + s + "]");
 			pDate.push_back( { i, s2 });
@@ -632,6 +643,22 @@ bool Parameters::loadPredefined(std::string const & data) {
 			}
 		}
 	}
+
+	if(!vskiplines.empty()){
+		//overwrite file
+		fileline = 0;
+		for (auto ss : vd) {
+			fileline++;
+			if(!oneOf(fileline,vskiplines)){
+				vo.push_back(ss);
+			}
+			else{
+//				printl(ss);
+			}
+		}
+		setPredefinedFileContents(joinV(vo,'\n'));
+	}
+
 
 	i = 0;
 	for (auto& a : pTime) {

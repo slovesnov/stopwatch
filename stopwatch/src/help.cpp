@@ -122,12 +122,26 @@ int getHHMM(BeepTimeType v) {
 int getYYYY(int v) {
 	return v / MMDDDIVISOR;
 }
+
 int getMM(int v) {
 	return getMMDD(v) / MMDIVISOR;
 }
+
 int getDD(int v) {
 	return getMMDD(v) % MMDIVISOR;
 }
+
 int getMMDD(int v) {
 	return v % MMDDDIVISOR;
+}
+
+bool yesNoDialog(std::string text) {
+	auto dialog = gtk_message_dialog_new(GTK_WINDOW(frame.window),
+			GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION,
+			GTK_BUTTONS_YES_NO, text.c_str());
+	gtk_window_set_title(GTK_WINDOW(dialog), "Question");
+	//GTK_RESPONSE_DELETE_EVENT, GTK_RESPONSE_NO, GTK_RESPONSE_YES
+	bool b = gtk_dialog_run(GTK_DIALOG(dialog))==GTK_RESPONSE_YES;
+	gtk_widget_destroy(dialog);
+	return b;
 }
