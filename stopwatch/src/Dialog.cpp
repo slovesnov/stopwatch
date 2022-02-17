@@ -51,6 +51,10 @@ void check_changed(GtkToggleButton*w, gpointer) {
 	dlg->checkChanged(w);
 }
 
+void volume_changed(GtkScaleButton*, double v, gpointer) {
+	dlg->soundVolumeChanged(v);
+}
+
 Dialog::Dialog(DialogType dt, const std::string message) {
 	std::string s, q;
 	int i, j, k, l;
@@ -60,6 +64,7 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		dlg = this;
 		digitalMode = config.digitalMode;
 		closeWarning = config.closeWarning;
+		soundVolume=config.getSoundVolume();
 	}
 
 	dialog = gtk_dialog_new();
@@ -171,6 +176,11 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(closeWarningCheck),
 				closeWarning);
 
+		volume = gtk_volume_button_new();
+		gtk_container_add(GTK_CONTAINER(w2), volume);
+		g_signal_connect(volume, "value-changed", G_CALLBACK(volume_changed), 0);
+
+		gtk_scale_button_set_value(GTK_SCALE_BUTTON(volume), soundVolume);
 	}
 	gtk_container_add(GTK_CONTAINER(w1), w2);
 
@@ -443,3 +453,6 @@ void Dialog::checkChanged(GtkToggleButton*w) {
 	}
 }
 
+void Dialog::soundVolumeChanged(double v) {
+	soundVolume=v;
+}

@@ -11,31 +11,11 @@
 #include "Frame.h"
 #include "Config.h"
 
-const std::string CONFIG_TAGS[]={
-	"captionsSize",
-	"timeZone",
-	"digitalMode",
-	"closeWarning",
-	"additionalHeight",
-	"lastSetTime",
-	"maxDigitalClockSize(time)",
-	"maxDigitalClockSize(stopwatch)",
-};
+const std::string CONFIG_TAGS[] = { "captionsSize", "timeZone", "digitalMode",
+		"closeWarning", "additionalHeight", "lastSetTime",
+		"maxDigitalClockSize(time)", "maxDigitalClockSize(stopwatch)","volume" };
 
 Config::Config() {
-//	char buffer[MAX_PATH];
-//	GetModuleFileName( NULL, buffer, MAX_PATH );
-//	printl(buffer);
-/*
-	//char*aa[]={buffer};
-	//printl(aa[0])
-	int argc=1;
-	char* argv[]={buffer};
-	gtk_init(&argc, &argv); //do not remove
-	aslovInit(buffer);
-	printl(getWorkingDirectory())
-*/
-
 	timeZone=3;
 
 	/* set timezone in config file because got invalid time for
@@ -62,15 +42,18 @@ void Config::init(){
 	closeWarning = 1;
 	maxDigitalClockSize[0]= {800,800,true};
 	maxDigitalClockSize[1]= {1800,1800,false};
+	soundVolume=0x3000;
 
 	int* var[] = {
 			nullptr,
 			&timeZone,
 			&digitalMode,
 			&closeWarning,
-			&additionalHeight };
+			&additionalHeight,
+			&soundVolume};
 	const int sz=SIZEI(var);
 
+	//c:\Users\noteboot\AppData\Local\stopwatch
 	MapStringString m;
 	MapStringString::iterator it;
 	read=loadConfig(m);
@@ -80,9 +63,7 @@ void Config::init(){
 			j=i-sz;
 			s=a.second;
 			if(i==0){
-//				printl(s,captionsSize.x,captionsSize.y)
 				captionsSize.fromString(s);
-//				printl(captionsSize.x,captionsSize.y)
 			}
 			else if(i<sz){
 				if(parseString(s, k)){
@@ -100,13 +81,11 @@ void Config::init(){
 				}
 			}
 			else{
-				assert(j<SIZE(maxDigitalClockSize));
+				assert(j<SIZEI(maxDigitalClockSize));
 				maxDigitalClockSize[j].fromString(s);
 			}
 		}
 	}
-
-	//printl(timeZone);
 
 	/* set timezone in config file because got invalid time for
 	 * in summer for Moscow (actually no saving daylight)
@@ -120,7 +99,6 @@ void Config::init(){
 		std::string s = format("%+03d", timeZone);
 		tz = g_time_zone_new_identifier(s.c_str());
 	}
-
 }
 
 void Config::write() {
@@ -147,9 +125,9 @@ void Config::write() {
 			additionalHeight,
 			s,
 			maxDigitalClockSize[0],
-			maxDigitalClockSize[1]
+			maxDigitalClockSize[1],
+			soundVolume
 	);
-
 }
 
 VString Config::getArguments() const {
@@ -184,3 +162,4 @@ VString Config::getArguments() const {
 	return r;
 
 }
+

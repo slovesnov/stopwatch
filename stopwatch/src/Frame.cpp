@@ -40,10 +40,10 @@ gboolean window_state_event(GtkWidget *, GdkEventWindowState *e, gpointer) {
 }
 
 gboolean on_widget_deleted(GtkWindow *widget, GdkEvent *event, gpointer data) {
+	config.write();//call here while frame & config are exist
 	if (!config.closeWarning) {
 		return FALSE;
 	}
-
 	return !yesNoDialog("Do you really want to exit?");
 }
 
@@ -163,8 +163,6 @@ Frame::~Frame() {
 	 */
 	cairo_surface_destroy(surface);
 	cairo_destroy(cr);
-
-	config.write();
 }
 
 void Frame::startTimer() {
@@ -268,7 +266,7 @@ void Frame::draw() {
 	const std::string so = s;
 
 	//20.728
-	const double FONT_HEIGHT_PIXELS = 20;
+	const double FONT_HEIGHT_PIXELS = getDPI().second < 125 ? 14 : 20;
 	if (stopwatch) {
 		//need set for digit mode
 		cairo_select_font_face(cr, "Times New Roman", CAIRO_FONT_SLANT_NORMAL,
@@ -728,6 +726,7 @@ void Frame::buttonClicked(GtkWidget*w) {
 			paint();
 		}
 		config.closeWarning = d.closeWarning;
+		config.setSoundVolume(d.soundVolume);
 	}
 	else {
 		if (config.digitalMode && sw) {

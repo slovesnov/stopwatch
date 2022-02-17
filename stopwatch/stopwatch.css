@@ -49,3 +49,9 @@ button:hover {
 button:hover:active{
 	background: -gtk-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
 }
+
+/* tooltip for sound volume button */
+tooltip {
+	font-size: 10pt;
+    background-color: #ffffff;
+}

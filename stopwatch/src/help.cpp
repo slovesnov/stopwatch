@@ -10,6 +10,7 @@
 
 #include "Frame.h"
 #include "help.h"
+#include "Config.h"
 
 #include <windows.h>//ERROR has in windows & in DialogType, so include after help.h
 
@@ -31,7 +32,8 @@ void beep() {
 	s= "Open "+getResourcePath("beep.mp3")+" Type MPEGVideo Alias theMP3";
 	sendMciCommand(s.c_str());
 
-	const short v=0x3000;//v is volume from 0 to 0xffff
+	short v=config.soundVolume;//v is volume from 0 to 0xffff
+//	v=0x3000;
 	waveOutSetVolume(0, v|(v<<16));//low word is left volume, high word is right volume
 
 	//originally was "Play theMP3 Wait". In this case program wait until sound finish play.

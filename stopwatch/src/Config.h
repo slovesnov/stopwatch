@@ -28,6 +28,11 @@ public:
 	int additionalHeight;
 	std::set<BeepTimeType> lastSetTime;
 	DigitalFontParameters maxDigitalClockSize[2];
+	/* soundVolume 0 - 0xffff=65535
+	 * for new notebook soundVolume=0x3000=12288 18.75%
+	 * for old notebook soundVolume=0xffff=65535 100%
+	 */
+	int soundVolume;
 	bool read;
 
 	Config();
@@ -39,6 +44,15 @@ public:
 	void write();
 
 	VString getArguments() const;
+
+	static const int MAX_VOLUME=0xffff;
+	double getSoundVolume() const {
+		return soundVolume / double(MAX_VOLUME);
+	}
+
+	void setSoundVolume(double v){
+		soundVolume=int(v*MAX_VOLUME);
+	}
 };
 
 extern Config config;
