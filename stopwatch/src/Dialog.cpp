@@ -177,10 +177,14 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 				closeWarning);
 
 		volume = gtk_volume_button_new();
-		gtk_container_add(GTK_CONTAINER(w2), volume);
 		g_signal_connect(volume, "value-changed", G_CALLBACK(volume_changed), 0);
-
 		gtk_scale_button_set_value(GTK_SCALE_BUTTON(volume), soundVolume);
+		testSoundButton = gtk_button_new_with_label("test \u266A");
+		w3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+		gtk_box_pack_start(GTK_BOX(w3), volume, 1, 1, 2);
+		gtk_box_pack_start(GTK_BOX(w3), testSoundButton, 1, 1, 2);
+		gtk_container_add(GTK_CONTAINER(w2), w3);
+
 	}
 	gtk_container_add(GTK_CONTAINER(w1), w2);
 
@@ -242,6 +246,8 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		g_signal_connect(editButton, "clicked", G_CALLBACK(button_clicked), 0);
 		g_signal_connect(reloadButton, "clicked", G_CALLBACK(button_clicked), 0);
 		g_signal_connect(upcomingAllButton, "clicked", G_CALLBACK(button_clicked),
+				0);
+		g_signal_connect(testSoundButton, "clicked", G_CALLBACK(button_clicked),
 				0);
 		g_signal_connect(digitalModeCheck, "toggled", G_CALLBACK(check_changed), 0);
 		g_signal_connect(closeWarningCheck, "toggled", G_CALLBACK(check_changed),
@@ -336,6 +342,10 @@ void Dialog::buttonClicked(GtkWidget *w) {
 		else {
 			Dialog d(DialogType::ERROR, what());
 		}
+	}
+	else if(w==testSoundButton){
+		int volume=Config::getSoundVolumeValue(soundVolume);
+		beep(volume);
 	}
 }
 

@@ -25,20 +25,23 @@ void sendMciCommand(const char *s) {
 #endif
 }
 
-void beep() {
+//volume from 0 to 0xffff
+void beep(short volume) {
 	std::string s;
 
 	sendMciCommand("Close All");
 	s= "Open "+getResourcePath("beep.mp3")+" Type MPEGVideo Alias theMP3";
 	sendMciCommand(s.c_str());
 
-	short v=config.soundVolume;//v is volume from 0 to 0xffff
-//	v=0x3000;
-	waveOutSetVolume(0, v|(v<<16));//low word is left volume, high word is right volume
+	waveOutSetVolume(0, volume|(volume<<16));//low word is left volume, high word is right volume
 
 	//originally was "Play theMP3 Wait". In this case program wait until sound finish play.
 	//If use "Play theMP3" command the function will be asynchronous
 	sendMciCommand("Play theMP3");
+}
+
+void beep() {
+	beep(config.soundVolume);
 }
 
 bool has(const VPredefinedDateType& v, int i) {

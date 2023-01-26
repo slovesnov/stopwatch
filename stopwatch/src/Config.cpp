@@ -11,6 +11,16 @@
 #include "Frame.h"
 #include "Config.h"
 
+const int captionsSizeIndex = 0;
+const int timeZoneIndex = 1;
+const int digitalModeIndex = 2;
+const int closeWarningIndex = 3;
+const int additionalHeightIndex = 4;
+const int lastSetTimeIndex = 5;
+const int maxDigitalClockSizeTimeIndex = 6;
+const int maxDigitalClockSizeStopwatchIndex = 7;
+const int volumeIndex = 8;
+
 const std::string CONFIG_TAGS[] = { "captionsSize", "timeZone", "digitalMode",
 		"closeWarning", "additionalHeight", "lastSetTime",
 		"maxDigitalClockSize(time)", "maxDigitalClockSize(stopwatch)","volume" };
@@ -33,7 +43,7 @@ Config::Config() {
 }
 
 void Config::init(){
-	int i,j,k;
+	int i,k;
 	int64_t ll;
 	std::string s;
 
@@ -50,8 +60,10 @@ void Config::init(){
 			&digitalMode,
 			&closeWarning,
 			&additionalHeight,
+			nullptr,
+			nullptr,
+			nullptr,
 			&soundVolume};
-	const int sz=SIZEI(var);
 
 	//c:\Users\noteboot\AppData\Local\stopwatch
 	MapStringString m;
@@ -59,6 +71,31 @@ void Config::init(){
 	read=loadConfig(m);
 	if (read) {
 		for(auto a:m){
+			i=INDEX_OF(a.first,CONFIG_TAGS);
+			s=a.second;
+			if(i==captionsSizeIndex){
+				captionsSize.fromString(s);
+			}
+			else if(i==lastSetTimeIndex){
+				if(!s.empty()){//s.empty() if was stopwatch mode
+					auto v = split(s, " ");
+					for (auto a : v) {
+						if(parseString(a, ll)){
+							lastSetTime.insert(ll);
+						}
+					}
+				}
+			}
+			else if(i==maxDigitalClockSizeTimeIndex || i==maxDigitalClockSizeStopwatchIndex){
+				maxDigitalClockSize[i-maxDigitalClockSizeTimeIndex].fromString(s);
+			}
+			else{
+				if(parseString(s, k)){
+					*var[i]=k;
+				}
+			}
+
+/*
 			i=INDEX_OF(a.first,CONFIG_TAGS);
 			j=i-sz;
 			s=a.second;
@@ -84,6 +121,8 @@ void Config::init(){
 				assert(j<SIZEI(maxDigitalClockSize));
 				maxDigitalClockSize[j].fromString(s);
 			}
+*/
+
 		}
 	}
 

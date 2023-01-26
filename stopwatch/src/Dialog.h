@@ -17,7 +17,7 @@ class Dialog: public Parameters {
 	GtkWidget *dialog, *entry, *comboMode, *comboPredefinedSet, *lError, *lInfo;
 	GtkWidget *minimizeCheck, *digitalModeCheck, *closeWarningCheck, *volume;
 	GtkWidget *okButton, *copyButton, *upcomingButton, *helpButton, *reloadButton,
-			*upcomingAllButton, *editButton;
+			*upcomingAllButton, *editButton,*testSoundButton;
 	bool signals = true;
 
 	void updateParametersChanges(bool ok = true);

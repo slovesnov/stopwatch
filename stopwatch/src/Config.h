@@ -50,8 +50,12 @@ public:
 		return soundVolume / double(MAX_VOLUME);
 	}
 
+	static int getSoundVolumeValue(double volume){
+		return int(volume*MAX_VOLUME);
+	}
+
 	void setSoundVolume(double v){
-		soundVolume=int(v*MAX_VOLUME);
+		soundVolume=getSoundVolumeValue(v);
 	}
 };
 

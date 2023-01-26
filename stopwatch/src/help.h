@@ -37,6 +37,7 @@ const int MMDIVISOR = 100;
 
 double secondsSince(clock_t t);
 
+void beep(short volume);
 void beep();
 
 #ifdef BASE_ADDONS
