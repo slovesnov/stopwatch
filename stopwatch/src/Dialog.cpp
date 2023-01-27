@@ -179,7 +179,8 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		volume = gtk_volume_button_new();
 		g_signal_connect(volume, "value-changed", G_CALLBACK(volume_changed), 0);
 		gtk_scale_button_set_value(GTK_SCALE_BUTTON(volume), soundVolume);
-		testSoundButton = gtk_button_new_with_label("test \u266A");
+		//\u266A
+		testSoundButton = gtk_button_new_with_label("test \u266B");
 		w3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_box_pack_start(GTK_BOX(w3), volume, 1, 1, 2);
 		gtk_box_pack_start(GTK_BOX(w3), testSoundButton, 1, 1, 2);
