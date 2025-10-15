@@ -26,13 +26,13 @@ class Frame: public Parameters {
 	clock_t lastTime;
 	std::set<BeepTimeType>::const_iterator beepIt; //for stopwatch mode
 	int fs[2] = { 0 }; //font size
-	cairo_surface_t* surface;
-	cairo_t* cr;
+	cairo_surface_t *surface;
+	cairo_t *cr;
 	clock_t lastDrawTime = 0;
 	std::string lastIconString;
 	int lastIconColorIndex = -1;
 public:
-	GtkWidget*window = NULL;
+	GtkWidget *window = NULL;
 
 	void startTimer();
 	void moveSizeWindow(bool b = true);
@@ -88,19 +88,36 @@ public:
 	gboolean timeFunction();
 	void onKeyPress(GdkEventKey *e);
 
-	void setParameters(Parameters const&p) {
+	void setParameters(Parameters const &p) {
 		(Parameters&) *this = p;
 		updateParse();
 	}
 	gboolean draw(GtkWidget *widget, cairo_t *c);
 	void countAreaSize(GtkWidget*);
-	void buttonClicked(GtkWidget*w);
+	void buttonClicked(GtkWidget *w);
 
 	gboolean windowStateEvent(GdkEventWindowState *e);
 
 	void updateReload() {
 		setIcon();
 		paint(); //if timer not run in stopwatch mode need to redraw
+	}
+
+	bool parse(VString const &a) {
+		return Parameters::parse(a);
+	}
+
+	bool parse(int argc, char *argv[]) {
+		if (!Parameters::parse(argc, argv)) {
+			return false;
+		}
+		//15oct25 fixed bug if program started with stopwatch arguments
+		beepIt = beepTime.cbegin();
+		return true;
+	}
+
+	bool parse(const std::string s, bool predefined = false) {
+		return Parameters::parse(s, predefined);
 	}
 
 #ifndef NDEBUG

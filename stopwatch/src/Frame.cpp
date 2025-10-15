@@ -20,9 +20,9 @@
  */
 const int MILLISECONDS = 250;
 const GdkRGBA COLOR[] = { { 0, 0, 0, 1 }, { 0, 0, .5, 1 } };
-const char* W[] = { "00:00:00", "00:00" };
+const char *W[] = { "00:00:00", "00:00" };
 
-void on_key_press(GtkWidget *, GdkEventKey *e, gpointer) {
+void on_key_press(GtkWidget*, GdkEventKey *e, gpointer) {
 	frame.onKeyPress(e);
 }
 
@@ -31,16 +31,16 @@ gboolean draw_callback(GtkWidget *w, cairo_t *c, gpointer) {
 }
 
 //same name function in Dialog.cpp so make it static
-static void button_clicked(GtkWidget*w, gpointer) {
+static void button_clicked(GtkWidget *w, gpointer) {
 	frame.buttonClicked(w);
 }
 
-gboolean window_state_event(GtkWidget *, GdkEventWindowState *e, gpointer) {
+gboolean window_state_event(GtkWidget*, GdkEventWindowState *e, gpointer) {
 	return frame.windowStateEvent(e);
 }
 
 gboolean on_widget_deleted(GtkWindow *widget, GdkEvent *event, gpointer data) {
-	config.write();//call here while frame & config are exist
+	config.write(); //call here while frame & config are exist
 	if (!config.closeWarning) {
 		return FALSE;
 	}
@@ -61,13 +61,13 @@ void Frame::show() {
 	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 	g_signal_connect(window, "destroy", G_CALLBACK (gtk_main_quit), 0); //doesn't call on shutdown
 
-	for (auto& a : area) {
+	for (auto &a : area) {
 		a = gtk_drawing_area_new();
 	}
 
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
-	const char* bt[] = { "set parameters", UPCOMING };
+	const char *bt[] = { "set parameters", UPCOMING };
 	for (i = 0; i < int(G_N_ELEMENTS(bt)); i++) {
 		auto w = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_box_pack_start(GTK_BOX(w), area[i], TRUE, TRUE, 0); //stretch
@@ -75,6 +75,7 @@ void Frame::show() {
 		button[i] = gtk_button_new_with_label(bt[i]);
 
 		g_signal_connect(button[i], "clicked", G_CALLBACK(button_clicked), 0);
+		gtk_widget_set_can_focus(button[i], FALSE);//prevents click on button when stop stopwatch
 		gtk_container_add(GTK_CONTAINER(w), button[i]);
 
 		gtk_container_add(GTK_CONTAINER(box), w);
@@ -88,7 +89,8 @@ void Frame::show() {
 	g_signal_connect(window, "window-state-event",
 			G_CALLBACK (window_state_event), 0);
 
-	g_signal_connect(window, "delete-event", G_CALLBACK(on_widget_deleted), NULL);
+	g_signal_connect(window, "delete-event", G_CALLBACK(on_widget_deleted),
+			NULL);
 
 	if (!isStopwatch()) {
 		startTimer();
@@ -113,23 +115,20 @@ void Frame::show() {
 			 */
 			if (minimize()) { //window iconified in moveSizeWindow() function
 				//call countAreaSize() in draw() function
-			}
-			else { //window isn't iconified can check&modify areaSize right now
+			} else { //window isn't iconified can check&modify areaSize right now
 				auto size = maxAreaSize;
 				countAreaSize(window);
-				if (size!= maxAreaSize) {
+				if (size != maxAreaSize) {
 					//window isn't iconified & showed so just call moveSizeWindow()
 					moveSizeWindow();
 				}
 			}
-		}
-		else {
+		} else {
 			gtk_widget_show_all(window);
 			countAreaSize(window); //after show all cann't avoid blink
 			moveSizeWindow();
 		}
-	}
-	else {
+	} else {
 		//area size already counted call moveSizeWindow() and then show window
 		moveSizeWindow();
 		gtk_widget_show_all(window);
@@ -177,7 +176,8 @@ void Frame::moveSizeWindow(bool b) {
 	int sx, sy;
 	gdk_monitor_get_workarea(monitor, &wr);
 
-	maxAreaSize = {wr.width - config.captionsSize.x, wr.height - config.captionsSize.y};
+	maxAreaSize = { wr.width - config.captionsSize.x, wr.height
+			- config.captionsSize.y };
 
 	if (config.digitalMode) {
 		auto df = createDigitalFont();
@@ -185,8 +185,7 @@ void Frame::moveSizeWindow(bool b) {
 		auto b = df.getStringSize(s);
 		sx = int(b.first);
 		sy = int(b.second) + config.additionalHeight;
-	}
-	else {
+	} else {
 		sx = sy = std::min(maxAreaSize.x, maxAreaSize.y);
 	}
 
@@ -202,7 +201,7 @@ void Frame::moveSizeWindow(bool b) {
 	}
 }
 
-void Frame::countAreaSize(GtkWidget*wnd) {
+void Frame::countAreaSize(GtkWidget *wnd) {
 	//Note window should be visible
 	GdkRectangle r, wr;
 	int w, h;
@@ -214,8 +213,9 @@ void Frame::countAreaSize(GtkWidget*wnd) {
 	gdk_window_get_frame_extents(gdk_window, &r);	//with title and borders
 	gdk_window_get_geometry(gdk_window, 0, 0, &w, &h);
 
-	config.captionsSize= {r.width-w,r.height-h};
-	maxAreaSize = {wr.width - config.captionsSize.x, wr.height - config.captionsSize.y};
+	config.captionsSize = { r.width - w, r.height - h };
+	maxAreaSize = { wr.width - config.captionsSize.x, wr.height
+			- config.captionsSize.y };
 }
 
 void Frame::draw() {
@@ -239,8 +239,7 @@ void Frame::draw() {
 		auto sz = df.getStringSize(s);
 		width = sz.first;
 		height = sz.second + config.additionalHeight;
-	}
-	else {
+	} else {
 		width = height = size;
 	}
 	const int MLW = 3;
@@ -259,8 +258,7 @@ void Frame::draw() {
 	if (stopwatch) {
 		i = startTime == 0 ? 0 : secondsSince(startTime);
 		s = format("%02d:%02d", i / 60, i % 60);
-	}
-	else {
+	} else {
 		s = d.format("%H:%M:%S");
 	}
 	const std::string so = s;
@@ -273,21 +271,23 @@ void Frame::draw() {
 				CAIRO_FONT_WEIGHT_NORMAL);
 
 		cairo_set_font_size(cr, FONT_HEIGHT_PIXELS); //height in pixels
-		drawText(cr, "Press any key to start/clear stopwatch", 0, 0, DRAW_TEXT_BEGIN, DRAW_TEXT_BEGIN);
+		drawText(cr, "Press any key to start/clear stopwatch", 0, 0,
+				DRAW_TEXT_BEGIN, DRAW_TEXT_BEGIN);
 	}
 
 	PangoLayout *layout;
 	layout = pango_cairo_create_layout(cr);
-	PangoFontDescription*desc = pango_font_description_from_string("Times New Roman, 12");
-	pango_font_description_set_absolute_size (desc, FONT_HEIGHT_PIXELS * PANGO_SCALE);
+	PangoFontDescription *desc = pango_font_description_from_string(
+			"Times New Roman, 12");
+	pango_font_description_set_absolute_size(desc,
+			FONT_HEIGHT_PIXELS * PANGO_SCALE);
 	pango_layout_set_font_description(layout, desc);
 
 	int maxTextHeight = 0;
 	for (k = 0; k < 2; k++) {
 		if (k == 0) {
 			s = getPredefinedTimeString();
-		}
-		else {
+		} else {
 			s = getInfoString() + "\npress Ctrl+A to adjust window";
 			pango_layout_set_alignment(layout, PANGO_ALIGN_RIGHT);
 		}
@@ -330,8 +330,7 @@ void Frame::draw() {
 		cairo_translate(cr, width / 2 - e.width / 2 - e.x_bearing,
 				height - maxTextHeight / 2 - e.height / 2 - e.y_bearing);
 		cairo_show_text(cr, b);
-	}
-	else {
+	} else {
 		//draw clockface
 		cairo_set_line_width(cr, MLW);
 		cairo_translate(cr, width / 2, height / 2);
@@ -355,8 +354,7 @@ void Frame::draw() {
 		for (i = 0; i < 60; i++) {
 			if (i % 5 == 0) {
 				j = stopwatch && i % 10 != 0 ? 1 : 2;
-			}
-			else {
+			} else {
 				j = 0;
 			}
 			cairo_set_line_width(cr, LW[j] * size / 1100);
@@ -392,16 +390,14 @@ void Frame::draw() {
 			if (j == 2) {
 				if (stopwatch) {
 					i = startTime == 0 ? 0 : secondsSince(startTime);
-				}
-				else {
+				} else {
 					i = d.second();
 				}
 				v = i / 60.;
-			}
-			else {
+			} else {
 				v = (d.second() / 60. + d.minute()) / 60;
 				if (j == 0) {
-					v += d.hour();	//don't need %12, because hour+12 gives +2*pi rotation
+					v += d.hour();//don't need %12, because hour+12 gives +2*pi rotation
 					v /= 12;
 				}
 			}
@@ -425,11 +421,11 @@ void Frame::draw() {
 			//before count fs[]
 			auto as = maxAreaSize;
 			countAreaSize(window);
-			if (as!= maxAreaSize) {
+			if (as != maxAreaSize) {
 				cairo_surface_destroy(surface);
 				cairo_destroy(cr);
-				surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, maxAreaSize.x,
-						maxAreaSize.y);
+				surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
+						maxAreaSize.x, maxAreaSize.y);
 				cr = cairo_create(surface);
 				moveSizeWindow(false);
 				draw();	//redraw & recount
@@ -451,7 +447,8 @@ void Frame::draw() {
 		//show "hh:mm:ss" or "mm:ss"
 		cairo_set_font_size(cr, fs[stopwatch]);
 		cairo_text_extents(cr, W[stopwatch], &e);
-		cairo_move_to(cr, -e.width / 2 - e.x_bearing, -e.height / 2 - e.y_bearing);
+		cairo_move_to(cr, -e.width / 2 - e.x_bearing,
+				-e.height / 2 - e.y_bearing);
 		cairo_show_text(cr, so.c_str());
 
 		const double Y = e.height / 2;
@@ -487,7 +484,8 @@ gboolean Frame::draw(GtkWidget *w, cairo_t *c) {
 	/* do draw() only 1 time
 	 * because draw functions calls from several areas
 	 */
-	if (lastDrawTime == 0 || secondsSince(lastDrawTime) >= MILLISECONDS / 1000.) {
+	if (lastDrawTime == 0
+			|| secondsSince(lastDrawTime) >= MILLISECONDS / 1000.) {
 		draw();
 		lastDrawTime = clock();
 	}
@@ -526,8 +524,7 @@ gboolean Frame::timeFunction() {
 				beepIt++;
 				beep();
 			}
-		}
-		else {
+		} else {
 			/* if "stopwatch m 40" then need to store to last time not only minutes
 			 * the same do for time mode
 			 */
@@ -594,11 +591,11 @@ void Frame::onKeyPress(GdkEventKey *e) {
 	if (!isStopwatch()) {
 		return;
 	}
+
 	if (startTime == 0) {
 		beep();
 		startTimer();
-	}
-	else {
+	} else {
 		startTime = 0;
 		draw();
 		paint();
@@ -621,8 +618,7 @@ void Frame::updateParse() {
 		startTime = 0; //stop timer if run anyway
 		draw();
 		paint();
-	}
-	else { //switch to reminder or time mode
+	} else { //switch to reminder or time mode
 		if (startTime == 0) { //if timer is not run
 			startTimer();	//start timer
 		}
@@ -634,15 +630,14 @@ void Frame::setIcon() {
 	cairo_t *cr;
 	cairo_surface_t *surface;
 	std::string s, s1;
-	GdkPixbuf*p;
+	GdkPixbuf *p;
 
 	if (isStopwatch()) {
 		i = startTime == 0 ? 0 : secondsSince(startTime);
 		//000 not 0000 to make bigger font, also do not output 0:00 for the same reason
 		assert(i >= 0);
 		s = format("%d%02d", i / 60, i % 60);
-	}
-	else {
+	} else {
 		s = beepTimeFormat(getNextBeepTime(), true);
 	}
 
@@ -652,8 +647,7 @@ void Frame::setIcon() {
 		if (i == 1) {
 			s = "<span underline='double'>" + s + "</span>";
 		}
-	}
-	else {
+	} else {
 		s = "<u>" + s + "</u>";
 	}
 
@@ -668,7 +662,7 @@ void Frame::setIcon() {
 	cr = cairo_create(surface);
 	setColor(cr);
 	PangoLayout *layout = pango_cairo_create_layout(cr);
-	PangoFontDescription*desc;
+	PangoFontDescription *desc;
 
 	//string can be 1234+100 so start from small k
 	for (pi = 0, pj = 0, pk = 0, k = 7;; k++) {
@@ -712,7 +706,7 @@ void Frame::setIcon() {
 
 }
 
-void Frame::buttonClicked(GtkWidget*w) {
+void Frame::buttonClicked(GtkWidget *w) {
 	bool sw = isStopwatch();
 	if (w == button[0]) {
 		Dialog d(DialogType::PARAMETERS);
@@ -720,15 +714,13 @@ void Frame::buttonClicked(GtkWidget*w) {
 			config.digitalMode = d.digitalMode;	//changes only after dialog closed
 			moveSizeWindow(false);
 			paint();
-		}
-		else if (config.digitalMode && sw != isStopwatch()) {
+		} else if (config.digitalMode && sw != isStopwatch()) {
 			moveSizeWindow(false);
 			paint();
 		}
 		config.closeWarning = d.closeWarning;
 		config.setSoundVolume(d.soundVolume);
-	}
-	else {
+	} else {
 		if (config.digitalMode && sw) {
 			mode = Mode::TIME;	//need to switch mode for correct drawing
 			moveSizeWindow(false);
@@ -771,7 +763,7 @@ void Frame::saveImage() {
 }
 #endif /* SAVE_IMAGE */
 
-gboolean Frame::windowStateEvent(GdkEventWindowState* e) {
+gboolean Frame::windowStateEvent(GdkEventWindowState *e) {
 	//if timer isn't run in stopwatch mode change underlined / normal text
 	if (isStopwatch() && startTime == 0) {
 		setIcon();
@@ -779,7 +771,7 @@ gboolean Frame::windowStateEvent(GdkEventWindowState* e) {
 	return TRUE;
 }
 
-void Frame::setColor(cairo_t* cr) {
+void Frame::setColor(cairo_t *cr) {
 	gdk_cairo_set_source_rgba(cr, COLOR + getColorIndex());
 }
 
