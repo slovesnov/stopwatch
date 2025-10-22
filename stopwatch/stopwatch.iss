@@ -2,8 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 #define GTKPATH "C:\soft\msys64\mingw64\"
 #define SITE "https://slovesnov.rf.gd"
-#define APPNAME "words"
-#define VERSION "4.44"
+#define APPNAME "stopwatch"
+#define VERSION "1.0"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -47,8 +47,6 @@ Source: "Release\{#APPNAME}.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "*.css"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "{#APPNAME}\*"; DestDir: "{app}\bin\{#APPNAME}"; Flags: onlyifdoesntexist
 Source: "{#APPNAME}\images\*"; Excludes: "*.txt"; DestDir: "{app}\bin\{#APPNAME}\images"; Flags: onlyifdoesntexist
-Source: "{#APPNAME}\en\*"; DestDir: "{app}\bin\{#APPNAME}\en"; Flags: ignoreversion
-Source: "{#APPNAME}\ru\*"; DestDir: "{app}\bin\{#APPNAME}\ru"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#APPNAME}"; Filename: "{app}\bin\{#APPNAME}.exe"
