@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #ifndef FRAME_H_

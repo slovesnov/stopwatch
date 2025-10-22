@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #ifndef DATETIME_H_
@@ -14,16 +14,16 @@
 #include "help.h"
 #include <algorithm>
 
-class DateTime{
+class DateTime {
 	GDateTime *d;
-	void init(GDateTime*p) {
+	void init(GDateTime *p) {
 		if (d) {
 			g_date_time_unref(d);
 		}
 		d = p;
 	}
 
-	void init(std::string const& iso);
+	void init(std::string const &iso);
 
 public:
 	DateTime() :
@@ -39,7 +39,7 @@ public:
 	/*
 	 make copy constructor to avoid errors on copy objects
 	 */
-	DateTime(DateTime const& q) :
+	DateTime(DateTime const &q) :
 			d(0) {
 		*this = q;
 	}
@@ -52,7 +52,7 @@ public:
 	DateTime(int time, int addDays);
 
 	//this=dt+minutes (negative values of minutes are allowed)
-	DateTime(DateTime const& dt, int minutes) :
+	DateTime(DateTime const &dt, int minutes) :
 			d(0) {
 		init(g_date_time_add_minutes(dt.d, minutes));
 	}
@@ -61,7 +61,7 @@ public:
 
 	void initTimeZone(gint64 v);
 
-	void operator=(DateTime const&v) {
+	void operator=(DateTime const &v) {
 		fromBeepTime(v.toBeepTime());
 	}
 
@@ -100,7 +100,7 @@ public:
 	int diffDays(BeepTimeType v);
 
 	//*this-v
-	int diffDays(DateTime const&v) {
+	int diffDays(DateTime const &v) {
 		return diffDays(v.toBeepTime());
 	}
 
@@ -114,7 +114,7 @@ public:
 	M(day_of_week)	//1 is Monday, 2 is Tuesday... 7 is Sunday
 #undef M
 
-	std::string format(const char*format, bool lower = false) const {
+	std::string format(const char *format, bool lower = false) const {
 		gchar *dt = g_date_time_format(d, format);
 		std::string s = dt;
 		g_free(dt);

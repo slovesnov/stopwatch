@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #include "Frame.h"
@@ -75,7 +75,7 @@ void Frame::show() {
 		button[i] = gtk_button_new_with_label(bt[i]);
 
 		g_signal_connect(button[i], "clicked", G_CALLBACK(button_clicked), 0);
-		gtk_widget_set_can_focus(button[i], FALSE);//prevents click on button when stop stopwatch
+		gtk_widget_set_can_focus(button[i], FALSE); //prevents click on button when stop stopwatch
 		gtk_container_add(GTK_CONTAINER(w), button[i]);
 
 		gtk_container_add(GTK_CONTAINER(box), w);

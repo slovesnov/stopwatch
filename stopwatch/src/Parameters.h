@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #ifndef PARAMETERS_H_
@@ -38,10 +38,10 @@ class Parameters {
 	bool parse(bool predefined = false);
 
 	static std::string infoString;
-	static void staticInit(const char*file);
+	static void staticInit(const char *file);
 
 public:
-	static const char* TITLE[int(Mode::MODE_SIZE)];
+	static const char *TITLE[int(Mode::MODE_SIZE)];
 
 	/* for stopwatch mode beepTime = seconds
 	 * for minute mode beepTime = minutes
@@ -58,12 +58,12 @@ public:
 	bool loadPredefined() {
 		return loadPredefined(getPredefinedFileContents());
 	}
-	bool loadPredefined(std::string const & data);//no static because store error message
+	bool loadPredefined(std::string const &data);//no static because store error message
 	std::string getPredefinedFileContents();
-	void setPredefinedFileContents(std::string const&s);
+	void setPredefinedFileContents(std::string const &s);
 
-	static std::string getPredefinedTimeString(
-			DialogType dt = DialogType::PARAMETERS);
+	static std::string getPredefinedTimeString(DialogType dt =
+			DialogType::PARAMETERS);
 	static std::string getPredefinedTimeString(int wday);
 	std::set<int> const& getPredefinedTime(int wday);
 	static std::string getPredefinedDateString();
@@ -73,14 +73,14 @@ public:
 		return infoString;
 	}
 
-	bool parse(VString const& a) {
+	bool parse(VString const &a) {
 		arg = a;
 		return parse();
 	}
 
 	bool parse(int argc, char *argv[]);
 	bool parse(const std::string s, bool predefined = false);
-	bool parse(int combo, int minimize, const char*p);
+	bool parse(int combo, int minimize, const char *p);
 	std::string what(bool forLabel = false) const;
 	std::string toString(StringType t) const;
 
@@ -108,14 +108,14 @@ public:
 		return beepTime.find(i) != beepTime.end();
 	}
 
-	void operator=(Parameters const&p);
+	void operator=(Parameters const &p);
 
 	void upcoming();
 	void upcomingAll();
 	BeepTimeType getNextBeepTime();
 	DateTime getUpcoming();
 
-	bool prepare(const char*file) {
+	bool prepare(const char *file) {
 		staticInit(file);
 		return loadPredefined();
 	}
@@ -123,11 +123,12 @@ public:
 	static bool isPredefinedDate();
 	std::string beepTimeFormat(BeepTimeType v, bool icon) const;
 
-	void addDays(Parameters const&p, int days);
+	void addDays(Parameters const &p, int days);
 	//copy and add days if needs
-	void copyAddDays(Parameters const&p);
+	void copyAddDays(Parameters const &p);
 
-	static void removeUntilTime(std::set<BeepTimeType>&b, BeepTimeType const& t);
+	static void removeUntilTime(std::set<BeepTimeType> &b,
+			BeepTimeType const &t);
 
 	static std::string getPredefinedFileName();
 };

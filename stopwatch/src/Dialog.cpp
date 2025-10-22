@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #include "Dialog.h"
@@ -15,16 +15,16 @@
 #include <cassert>
 #include <set>
 
-static Dialog*dlg = 0;
+static Dialog *dlg = 0;
 
 const Mode DEFAULT_MODE = Mode::TIME;
 const char CERROR[] = "cerror";
-const char HELP_URL[] = "http://slovesnov.users.sourceforge.net/?stopwatch";
-const char* DIALOG_TITLE[] = {
-		"Please set up parameters and press enter/return key or click ok button",
-		"error",
-		"Success reload" };
-const char* DIALOG_ICON[] = { "128", "error", "48" };
+const char HELP_URL[] = "http://slovesnov.rf.gd/?stopwatch";
+const char *DIALOG_TITLE[] =
+		{
+				"Please set up parameters and press enter/return key or click ok button",
+				"error", "Success reload" };
+const char *DIALOG_ICON[] = { "128", "error", "48" };
 static_assert(SIZEI(DIALOG_TITLE)==int(DialogType::DIALOG_TYPE_SIZE));
 static_assert(SIZEI(DIALOG_TITLE)==SIZEI(DIALOG_ICON));
 
@@ -34,11 +34,11 @@ static void button_clicked(GtkWidget *w, gpointer) {
 	dlg->buttonClicked(w);
 }
 
-void entry_activated(GtkEntry *, gpointer) {
+void entry_activated(GtkEntry*, gpointer) {
 	dlg->entryActivated();
 }
 
-void entry_changed(GtkWidget *, gpointer) {
+void entry_changed(GtkWidget*, gpointer) {
 	dlg->entryChanged();
 }
 
@@ -47,7 +47,7 @@ gboolean combo_changed(GtkComboBox *w, gpointer) {
 	return TRUE;
 }
 
-void check_changed(GtkToggleButton*w, gpointer) {
+void check_changed(GtkToggleButton *w, gpointer) {
 	dlg->checkChanged(w);
 }
 
@@ -64,7 +64,7 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		dlg = this;
 		digitalMode = config.digitalMode;
 		closeWarning = config.closeWarning;
-		soundVolume=config.getSoundVolume();
+		soundVolume = config.getSoundVolume();
 	}
 
 	dialog = gtk_dialog_new();
@@ -76,9 +76,9 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		 */
 		gtk_window_set_transient_for(GTK_WINDOW(dialog),
 				GTK_WINDOW(
-						dt == DialogType::PARAMETERS ? frame.getWindow() : dlg->dialog));
-	}
-	else {
+						dt == DialogType::PARAMETERS ?
+								frame.getWindow() : dlg->dialog));
+	} else {
 		gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	}
 	gtk_window_set_resizable(GTK_WINDOW(dialog), false);
@@ -103,7 +103,8 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		if (frame.created()) {
 			copyButton = gtk_button_new_with_label("copy");
 			gtk_container_add(GTK_CONTAINER(w1), copyButton);
-			g_signal_connect(copyButton, "clicked", G_CALLBACK(button_clicked), 0);
+			g_signal_connect(copyButton, "clicked", G_CALLBACK(button_clicked),
+					0);
 		}
 
 		upcomingButton = gtk_button_new_with_label(UPCOMING);
@@ -133,7 +134,7 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		gtk_container_add(GTK_CONTAINER(w2), comboPredefinedSet);
 	}
 
-	s = getImagePath(DIALOG_ICON[int(dt)]+std::string(".png" ));
+	s = getImagePath(DIALOG_ICON[int(dt)] + std::string(".png"));
 	auto image = gtk_image_new_from_file(s.c_str());
 	gtk_box_pack_start(GTK_BOX(w2), image, TRUE, TRUE, 0); //fill
 
@@ -177,7 +178,8 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 				closeWarning);
 
 		volume = gtk_volume_button_new();
-		g_signal_connect(volume, "value-changed", G_CALLBACK(volume_changed), 0);
+		g_signal_connect(volume, "value-changed", G_CALLBACK(volume_changed),
+				0);
 		gtk_scale_button_set_value(GTK_SCALE_BUTTON(volume), soundVolume);
 		//\u266A
 		testSoundButton = gtk_button_new_with_label("test \u266B");
@@ -210,14 +212,12 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 			s += q;
 		}
 		gtk_label_set_markup(GTK_LABEL(w3), s.c_str());
-	}
-	else if (dt == DialogType::ERROR) {
+	} else if (dt == DialogType::ERROR) {
 		/* cann't do gtk_label_set_markup because get error for "i<=2" parsed as tag
 		 * but there is no tag
 		 */
 		gtk_label_set_label(GTK_LABEL(w3), message.c_str());
-	}
-	else {
+	} else {
 		gtk_label_set_markup(GTK_LABEL(w3), message.c_str());
 	}
 
@@ -238,21 +238,25 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 
 		g_signal_connect(entry, "changed", G_CALLBACK(entry_changed), 0);
 		g_signal_connect(entry, "activate", G_CALLBACK(entry_activated), 0); //call on enter or return key pressed
-		g_signal_connect(minimizeCheck, "toggled", G_CALLBACK(check_changed), 0);
-		g_signal_connect(okButton, "clicked", G_CALLBACK(button_clicked), 0);
-		g_signal_connect(upcomingButton, "clicked", G_CALLBACK(button_clicked), 0);
-		g_signal_connect(comboPredefinedSet, "changed", G_CALLBACK(combo_changed),
+		g_signal_connect(minimizeCheck, "toggled", G_CALLBACK(check_changed),
 				0);
+		g_signal_connect(okButton, "clicked", G_CALLBACK(button_clicked), 0);
+		g_signal_connect(upcomingButton, "clicked", G_CALLBACK(button_clicked),
+				0);
+		g_signal_connect(comboPredefinedSet, "changed",
+				G_CALLBACK(combo_changed), 0);
 		g_signal_connect(helpButton, "clicked", G_CALLBACK(button_clicked), 0);
 		g_signal_connect(editButton, "clicked", G_CALLBACK(button_clicked), 0);
-		g_signal_connect(reloadButton, "clicked", G_CALLBACK(button_clicked), 0);
-		g_signal_connect(upcomingAllButton, "clicked", G_CALLBACK(button_clicked),
+		g_signal_connect(reloadButton, "clicked", G_CALLBACK(button_clicked),
 				0);
+		g_signal_connect(upcomingAllButton, "clicked",
+				G_CALLBACK(button_clicked), 0);
 		g_signal_connect(testSoundButton, "clicked", G_CALLBACK(button_clicked),
 				0);
-		g_signal_connect(digitalModeCheck, "toggled", G_CALLBACK(check_changed), 0);
-		g_signal_connect(closeWarningCheck, "toggled", G_CALLBACK(check_changed),
+		g_signal_connect(digitalModeCheck, "toggled", G_CALLBACK(check_changed),
 				0);
+		g_signal_connect(closeWarningCheck, "toggled",
+				G_CALLBACK(check_changed), 0);
 	}
 
 	gtk_window_set_title(GTK_WINDOW(dialog), DIALOG_TITLE[int(dt)]);
@@ -273,8 +277,7 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		k = k - i;
 		if (j > k) {
 			gtk_widget_set_margin_start(lError, j - k);
-		}
-		else {
+		} else {
 			gtk_widget_set_margin_end(lError, k - j);
 		}
 
@@ -297,8 +300,7 @@ void Dialog::buttonClicked(GtkWidget *w) {
 		if (isTime()) {
 			config.write();
 		}
-	}
-	else if (w == copyButton) {
+	} else if (w == copyButton) {
 		copyAddDays(frame);
 		updateParametersChanges();
 		/* Note need call entryChanged();
@@ -307,19 +309,15 @@ void Dialog::buttonClicked(GtkWidget *w) {
 		 * and time 0:30 and parameters "+5 1720" means 35 1720
 		 */
 		entryChanged();
-	}
-	else if (w == upcomingButton) {
+	} else if (w == upcomingButton) {
 		upcoming();
 		updateParametersChanges();
-	}
-	else if (w == upcomingAllButton) {
+	} else if (w == upcomingAllButton) {
 		upcomingAll();
 		updateParametersChanges();
-	}
-	else if (w == helpButton) {
+	} else if (w == helpButton) {
 		gtk_show_uri_on_window(0, HELP_URL, GDK_CURRENT_TIME, NULL);
-	}
-	else if (w == editButton) {
+	} else if (w == editButton) {
 		/* Note	gtk_show_uri_on_window(0, getPredefinedFileName().c_str(), GDK_CURRENT_TIME,NULL);
 		 * hang if set default application for txt files scite so use my own editor
 		 * also the same for g_spawn_async
@@ -329,8 +327,7 @@ void Dialog::buttonClicked(GtkWidget *w) {
 			//loadPredefined() ok so just update
 			updateLoadPredefined();
 		}
-	}
-	else if (w == reloadButton) {
+	} else if (w == reloadButton) {
 		if (loadPredefined()) {
 			//before show dialog, to make updates
 			updateLoadPredefined();
@@ -339,13 +336,11 @@ void Dialog::buttonClicked(GtkWidget *w) {
 					+ getPredefinedTimeString(DialogType::MESSASE) + "\n\n"
 					+ getPredefinedDateString();
 			Dialog d(DialogType::MESSASE, a);
-		}
-		else {
+		} else {
 			Dialog d(DialogType::ERROR, what());
 		}
-	}
-	else if(w==testSoundButton){
-		int volume=Config::getSoundVolumeValue(soundVolume);
+	} else if (w == testSoundButton) {
+		int volume = Config::getSoundVolumeValue(soundVolume);
 		beep(volume);
 	}
 }
@@ -372,7 +367,8 @@ void Dialog::entryChanged() {
 	}
 	updateEntryChanges(
 			parse(gtk_combo_box_get_active(GTK_COMBO_BOX(comboMode)),
-					gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(minimizeCheck)),
+					gtk_toggle_button_get_active(
+							GTK_TOGGLE_BUTTON(minimizeCheck)),
 					gtk_entry_get_text(GTK_ENTRY(entry))));
 }
 
@@ -382,8 +378,7 @@ void Dialog::updateEntryChanges(bool ok) {
 		s = toString(StringType::DIALOG); //output recognized values
 		removeClass(entry, CERROR); //normal font, all valid
 		removeClass(lError, CERROR);
-	}
-	else {
+	} else {
 		s = what(true);
 		addClass(entry, CERROR); //red font
 		addClass(lError, CERROR);
@@ -413,7 +408,7 @@ void Dialog::updateReload() {
 }
 
 void Dialog::fillPredefinedSet() {
-	for (auto& a : predefinedSet) {
+	for (auto &a : predefinedSet) {
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboPredefinedSet),
 				a.c_str());
 	}
@@ -433,8 +428,7 @@ void Dialog::comboChanged(GtkComboBox *w) {
 	if (w == GTK_COMBO_BOX(comboMode)) {
 		modifyMinimizeCheck();
 		entryChanged();
-	}
-	else {
+	} else {
 		gchar *p = gtk_combo_box_text_get_active_text(
 				GTK_COMBO_BOX_TEXT(comboPredefinedSet));
 		std::string s = p;
@@ -448,22 +442,20 @@ void Dialog::comboChanged(GtkComboBox *w) {
 	}
 }
 
-void Dialog::checkChanged(GtkToggleButton*w) {
+void Dialog::checkChanged(GtkToggleButton *w) {
 	if (w == GTK_TOGGLE_BUTTON(minimizeCheck)) {
 		if (signals) {
 			entryChanged();
 		}
-	}
-	else if (w == GTK_TOGGLE_BUTTON(digitalModeCheck)) {
+	} else if (w == GTK_TOGGLE_BUTTON(digitalModeCheck)) {
 		digitalMode = gtk_toggle_button_get_active(
 				GTK_TOGGLE_BUTTON(digitalModeCheck));
-	}
-	else {
+	} else {
 		closeWarning = gtk_toggle_button_get_active(
 				GTK_TOGGLE_BUTTON(closeWarningCheck));
 	}
 }
 
 void Dialog::soundVolumeChanged(double v) {
-	soundVolume=v;
+	soundVolume = v;
 }

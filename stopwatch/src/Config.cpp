@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #include "Frame.h"
@@ -21,12 +21,13 @@ const int maxDigitalClockSizeTimeIndex = 6;
 const int maxDigitalClockSizeStopwatchIndex = 7;
 const int volumeIndex = 8;
 
-const std::string CONFIG_TAGS[] = { "captionsSize", "timeZone", "digitalMode",
-		"closeWarning", "additionalHeight", "lastSetTime",
-		"maxDigitalClockSize(time)", "maxDigitalClockSize(stopwatch)","volume" };
+const std::string CONFIG_TAGS[] =
+		{ "captionsSize", "timeZone", "digitalMode", "closeWarning",
+				"additionalHeight", "lastSetTime", "maxDigitalClockSize(time)",
+				"maxDigitalClockSize(stopwatch)", "volume" };
 
 Config::Config() {
-	timeZone=3;
+	timeZone = 3;
 
 	/* set timezone in config file because got invalid time for
 	 * in summer for Moscow (actually no saving daylight)
@@ -34,94 +35,84 @@ Config::Config() {
 	 */
 	if (timeZone == DEFAULT_TIME_ZONE) {
 		tz = g_time_zone_new_local();
-	}
-	else {
+	} else {
 		//3 is full width with sign
 		std::string s = format("%+03d", timeZone);
 		tz = g_time_zone_new_identifier(s.c_str());
 	}
 }
 
-void Config::init(){
-	int i,k;
+void Config::init() {
+	int i, k;
 	int64_t ll;
 	std::string s;
 
 	timeZone = DEFAULT_TIME_ZONE;
 	digitalMode = 0;
 	closeWarning = 1;
-	maxDigitalClockSize[0]= {800,800,true};
-	maxDigitalClockSize[1]= {1800,1800,false};
-	soundVolume=0x3000;
+	maxDigitalClockSize[0] = { 800, 800, true };
+	maxDigitalClockSize[1] = { 1800, 1800, false };
+	soundVolume = 0x3000;
 
-	int* var[] = {
-			nullptr,
-			&timeZone,
-			&digitalMode,
-			&closeWarning,
-			&additionalHeight,
-			nullptr,
-			nullptr,
-			nullptr,
-			&soundVolume};
+	int *var[] = { nullptr, &timeZone, &digitalMode, &closeWarning,
+			&additionalHeight, nullptr, nullptr, nullptr, &soundVolume };
 
 	//c:\Users\noteboot\AppData\Local\stopwatch
 	MapStringString m;
 	MapStringString::iterator it;
-	read=loadConfig(m);
+	read = loadConfig(m);
 	if (read) {
-		for(auto a:m){
-			i=INDEX_OF(a.first,CONFIG_TAGS);
-			s=a.second;
-			if(i==captionsSizeIndex){
+		for (auto a : m) {
+			i = INDEX_OF(a.first, CONFIG_TAGS);
+			s = a.second;
+			if (i == captionsSizeIndex) {
 				captionsSize.fromString(s);
-			}
-			else if(i==lastSetTimeIndex){
-				if(!s.empty()){//s.empty() if was stopwatch mode
+			} else if (i == lastSetTimeIndex) {
+				if (!s.empty()) { //s.empty() if was stopwatch mode
 					auto v = split(s, " ");
 					for (auto a : v) {
-						if(parseString(a, ll)){
+						if (parseString(a, ll)) {
 							lastSetTime.insert(ll);
 						}
 					}
 				}
-			}
-			else if(i==maxDigitalClockSizeTimeIndex || i==maxDigitalClockSizeStopwatchIndex){
-				maxDigitalClockSize[i-maxDigitalClockSizeTimeIndex].fromString(s);
-			}
-			else{
-				if(parseString(s, k)){
-					*var[i]=k;
+			} else if (i == maxDigitalClockSizeTimeIndex
+					|| i == maxDigitalClockSizeStopwatchIndex) {
+				maxDigitalClockSize[i - maxDigitalClockSizeTimeIndex].fromString(
+						s);
+			} else {
+				if (parseString(s, k)) {
+					*var[i] = k;
 				}
 			}
 
-/*
-			i=INDEX_OF(a.first,CONFIG_TAGS);
-			j=i-sz;
-			s=a.second;
-			if(i==0){
-				captionsSize.fromString(s);
-			}
-			else if(i<sz){
-				if(parseString(s, k)){
-					*var[i]=k;
-				}
-			}
-			else if(i==sz){
-				if(!s.empty()){//s.empty() if was stopwatch mode
-					auto v = split(s, " ");
-					for (auto a : v) {
-						if(parseString(a, ll)){
-							lastSetTime.insert(ll);
-						}
-					}
-				}
-			}
-			else{
-				assert(j<SIZEI(maxDigitalClockSize));
-				maxDigitalClockSize[j].fromString(s);
-			}
-*/
+			/*
+			 i=INDEX_OF(a.first,CONFIG_TAGS);
+			 j=i-sz;
+			 s=a.second;
+			 if(i==0){
+			 captionsSize.fromString(s);
+			 }
+			 else if(i<sz){
+			 if(parseString(s, k)){
+			 *var[i]=k;
+			 }
+			 }
+			 else if(i==sz){
+			 if(!s.empty()){//s.empty() if was stopwatch mode
+			 auto v = split(s, " ");
+			 for (auto a : v) {
+			 if(parseString(a, ll)){
+			 lastSetTime.insert(ll);
+			 }
+			 }
+			 }
+			 }
+			 else{
+			 assert(j<SIZEI(maxDigitalClockSize));
+			 maxDigitalClockSize[j].fromString(s);
+			 }
+			 */
 
 		}
 	}
@@ -132,8 +123,7 @@ void Config::init(){
 	 */
 	if (timeZone == DEFAULT_TIME_ZONE) {
 		tz = g_time_zone_new_local();
-	}
-	else {
+	} else {
 		//3 is full width with sign
 		std::string s = format("%+03d", timeZone);
 		tz = g_time_zone_new_identifier(s.c_str());
@@ -151,22 +141,13 @@ void Config::write() {
 			}
 			s += std::to_string(v);
 		}
-	}
-	else {
+	} else {
 		s = "";
 	}
 
-	WRITE_CONFIG(CONFIG_TAGS,
-			captionsSize,
-			timeZone,
-			digitalMode,
-			closeWarning,
-			additionalHeight,
-			s,
-			maxDigitalClockSize[0],
-			maxDigitalClockSize[1],
-			soundVolume
-	);
+	WRITE_CONFIG(CONFIG_TAGS, captionsSize, timeZone, digitalMode, closeWarning,
+			additionalHeight, s, maxDigitalClockSize[0], maxDigitalClockSize[1],
+			soundVolume);
 }
 
 VString Config::getArguments() const {

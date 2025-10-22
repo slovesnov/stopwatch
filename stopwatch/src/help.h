@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #ifndef HELP_H_
@@ -47,9 +47,9 @@ void exploreAllChildrenRecursive(GtkWidget* w);
 int getYYYYMMDD(BeepTimeType v);
 int getHHMM(BeepTimeType v);
 
-bool has(VPredefinedDateType const& v, int i);
-bool comparePredefinedDate(const PredefinedDateType& a,
-		const PredefinedDateType& b);
+bool has(VPredefinedDateType const &v, int i);
+bool comparePredefinedDate(const PredefinedDateType &a,
+		const PredefinedDateType &b);
 int getYYYY(int v);
 int getMM(int v);
 int getDD(int v);

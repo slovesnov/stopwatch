@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #include "Frame.h"
@@ -30,10 +30,10 @@ void beep(short volume) {
 	std::string s;
 
 	sendMciCommand("Close All");
-	s= "Open "+getResourcePath("beep.mp3")+" Type MPEGVideo Alias theMP3";
+	s = "Open " + getResourcePath("beep.mp3") + " Type MPEGVideo Alias theMP3";
 	sendMciCommand(s.c_str());
 
-	waveOutSetVolume(0, volume|(volume<<16));//low word is left volume, high word is right volume
+	waveOutSetVolume(0, volume | (volume << 16)); //low word is left volume, high word is right volume
 
 	//originally was "Play theMP3 Wait". In this case program wait until sound finish play.
 	//If use "Play theMP3" command the function will be asynchronous
@@ -44,14 +44,15 @@ void beep() {
 	beep(config.soundVolume);
 }
 
-bool has(const VPredefinedDateType& v, int i) {
-	auto a = std::find_if(v.cbegin(), v.cend(),
-			[&] (auto e) {return e.first==i;});
+bool has(const VPredefinedDateType &v, int i) {
+	auto a = std::find_if(v.cbegin(), v.cend(), [&](auto e) {
+		return e.first == i;
+	});
 	return a != v.cend();
 }
 
-bool comparePredefinedDate(const PredefinedDateType& a,
-		const PredefinedDateType& b) {
+bool comparePredefinedDate(const PredefinedDateType &a,
+		const PredefinedDateType &b) {
 	auto amd = getMMDD(a.first);
 	auto bmd = getMMDD(b.first);
 	auto ay = getYYYY(a.first);
@@ -59,8 +60,7 @@ bool comparePredefinedDate(const PredefinedDateType& a,
 
 	if (amd == bmd) {
 		return ay < by;
-	}
-	else {
+	} else {
 		return amd < bmd;
 	}
 }
@@ -146,7 +146,7 @@ bool yesNoDialog(std::string text) {
 			GTK_BUTTONS_YES_NO, text.c_str());
 	gtk_window_set_title(GTK_WINDOW(dialog), "Question");
 	//GTK_RESPONSE_DELETE_EVENT, GTK_RESPONSE_NO, GTK_RESPONSE_YES
-	bool b = gtk_dialog_run(GTK_DIALOG(dialog))==GTK_RESPONSE_YES;
+	bool b = gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES;
 	gtk_widget_destroy(dialog);
 	return b;
 }

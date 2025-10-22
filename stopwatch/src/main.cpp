@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2015-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #include "Config.h"
@@ -43,15 +43,13 @@ int main(int argc, char *argv[]) {
 		auto a = config.getArguments();
 		if (a.empty()) {
 			frame.upcoming();
-		}
-		else {
+		} else {
 			if (!frame.parse(a)) {
 				Dialog d(DialogType::ERROR, frame.what());
 				return 1;
 			}
 		}
-	}
-	else {
+	} else {
 		if (!frame.parse(argc, argv)) {
 			Dialog d(DialogType::ERROR, frame.what());
 			return 1;

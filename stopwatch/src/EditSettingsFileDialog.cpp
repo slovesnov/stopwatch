@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #include "EditSettingsFileDialog.h"
@@ -19,9 +19,9 @@
  * (stopwatch.exe:6436): Gdk-CRITICAL **: 02:22:38.250: gdk_window_get_state: assertion 'GDK_IS_WINDOW (window)' failed
  */
 
-static EditSettingsFileDialog*dlg;
+static EditSettingsFileDialog *dlg;
 
-static void mark_set(GtkTextBuffer *, GtkTextIter *, GtkTextMark *, gpointer) {
+static void mark_set(GtkTextBuffer*, GtkTextIter*, GtkTextMark*, gpointer) {
 	dlg->updateInfo();
 }
 
@@ -98,7 +98,7 @@ void EditSettingsFileDialog::updateInfo() {
 	gtk_label_set_text(GTK_LABEL(info), s.c_str());
 }
 
-void EditSettingsFileDialog::buttonClicked(GtkWidget* w) {
+void EditSettingsFileDialog::buttonClicked(GtkWidget *w) {
 	GtkTextIter start, end;
 	gtk_text_buffer_get_start_iter(buffer, &start);
 	gtk_text_buffer_get_end_iter(buffer, &end);
@@ -107,8 +107,7 @@ void EditSettingsFileDialog::buttonClicked(GtkWidget* w) {
 	if (loadPredefined(s)) {
 		setPredefinedFileContents(s);
 		gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
-	}
-	else {
+	} else {
 		Dialog d(DialogType::ERROR, what());
 	}
 

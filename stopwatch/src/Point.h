@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #ifndef POINT_H_
@@ -16,13 +16,13 @@
 
 struct Point {
 	int x, y;
-	bool operator !=(const Point& p)const{
-		return x!=p.x || y!=p.y;
+	bool operator !=(const Point &p) const {
+		return x != p.x || y != p.y;
 	}
-	void fromString(std::string const&s);
+	void fromString(std::string const &s);
 };
 
-std::ostream& operator <<(std::ostream& o, const Point& p);
+std::ostream& operator <<(std::ostream &o, const Point &p);
 //std::istream& operator >>(std::istream& i, Point& p);
 
 #endif /* POINT_H_ */

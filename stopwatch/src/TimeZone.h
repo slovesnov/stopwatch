@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #ifndef TIMEZONE_H_
@@ -28,8 +28,7 @@ public:
 		timeZone = c.timeZone;
 		if (timeZone == DEFAULT_TIME_ZONE) {
 			tz = g_time_zone_new_local();
-		}
-		else {
+		} else {
 			//3 is full width with sign
 			std::string s = format("%+03d", timeZone);
 			tz = g_time_zone_new(s.c_str());

@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #ifndef DIALOG_H_
@@ -16,8 +16,8 @@
 class Dialog: public Parameters {
 	GtkWidget *dialog, *entry, *comboMode, *comboPredefinedSet, *lError, *lInfo;
 	GtkWidget *minimizeCheck, *digitalModeCheck, *closeWarningCheck, *volume;
-	GtkWidget *okButton, *copyButton, *upcomingButton, *helpButton, *reloadButton,
-			*upcomingAllButton, *editButton,*testSoundButton;
+	GtkWidget *okButton, *copyButton, *upcomingButton, *helpButton,
+			*reloadButton, *upcomingAllButton, *editButton, *testSoundButton;
 	bool signals = true;
 
 	void updateParametersChanges(bool ok = true);
@@ -36,7 +36,7 @@ public:
 	void buttonClicked(GtkWidget *w);
 	void entryActivated();
 	void entryChanged();
-	void checkChanged(GtkToggleButton*w);
+	void checkChanged(GtkToggleButton *w);
 	void comboChanged(GtkComboBox *w);
 	void modifyMinimizeCheck();
 	void soundVolumeChanged(double v);

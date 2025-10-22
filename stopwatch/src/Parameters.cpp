@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #include "Parameters.h"
@@ -18,7 +18,7 @@ std::set<int> Parameters::predefinedTime[8];
 VString Parameters::predefinedSet;
 VPredefinedDateType Parameters::predefinedDate;
 std::string Parameters::infoString;
-const char* Parameters::TITLE[] = { "stopwatch", "minute", "time" };
+const char *Parameters::TITLE[] = { "stopwatch", "minute", "time" };
 
 bool Parameters::parse(int argc, char *argv[]) {
 	arg.clear(); //may be not empty from previous errors
@@ -37,7 +37,7 @@ bool Parameters::parse(int argc, char *argv[]) {
 	ASSERT_FULL( (t/100)>=0&&(t/100)<24, "HOUR should be from 0 to 23", a,type)
 #define ASSERT_TIME(t,a) ASSERT_TIME_FULL(t,a,0)
 
-bool Parameters::parse(int combo, int minimize, const char*p) {
+bool Parameters::parse(int combo, int minimize, const char *p) {
 	ASSERT1(strlen(p) != 0, "no arguments")
 	std::string s;
 	s += *TITLE[combo];
@@ -52,7 +52,7 @@ bool Parameters::parse(int combo, int minimize, const char*p) {
 bool Parameters::parse(const std::string s, bool predefined) {
 	arg.clear(); //may be not empty from previous errors
 
-	for (auto& a : split(s, " ")) {
+	for (auto &a : split(s, " ")) {
 		/* if p="10  20" -> split={"10","","20"} so remove empty values
 		 * for command line if call "stopwatch.exe 10  20" then argv={"10","20"}, so don't need check for main()
 		 */
@@ -71,7 +71,7 @@ bool Parameters::parse(bool predefined) {
 	int i, j, k = 0, l, addDays;
 	BeepTimeType lastInserted = 0;
 	size_t lastSize;
-	const char*p;
+	const char *p;
 	char *e;
 	bool repeat;
 	DateTime d;
@@ -97,8 +97,7 @@ bool Parameters::parse(bool predefined) {
 	for (p = arg[0].c_str() + 1, j = 1; j < i; j++, p++) {
 		if (*p == MINIMIZE_CHAR) {
 			_minimize = true;
-		}
-		else {
+		} else {
 			ASSERT(0, "invalid char", 0)
 		}
 	}
@@ -112,24 +111,21 @@ bool Parameters::parse(bool predefined) {
 		if (p + strlen(p) == e) {
 			k = 1; //repeat
 			repeat = false;
-		}
-		else {
+		} else {
 			if (isTime() && e > p && *e == '+') {
 				repeat = false;
 				e++;
 				if (*e == 0) {
 					addDays = 1;
 					ASSERT(*e == 0, "not all string recognized", i)
-				}
-				else {
+				} else {
 					//"730++1" invalid string
 					ASSERT(isdigit(*e), "not all string recognized", i)
 					addDays = strtol(e, &e, 10);
 					ASSERT(addDays > 0, "invalid add days", i)
 					ASSERT(*e == 0, "not all string recognized", i)
 				}
-			}
-			else {
+			} else {
 				ASSERT(e > p && *e == ',', "not all string recognized", i)
 				//For example "t ab"
 				e++;
@@ -147,8 +143,7 @@ bool Parameters::parse(bool predefined) {
 			ASSERT(j > 0, "arguments should be positive integers", i)
 			if (j < 10) {
 				j *= 60;
-			}
-			else if (j >= 100) {
+			} else if (j >= 100) {
 				l = j % 100;
 				ASSERT(l <= 59, "seconds should be from 0 to 59", i)
 				j = (j / 100) * 60 + l;
@@ -158,14 +153,12 @@ bool Parameters::parse(bool predefined) {
 					lastInserted = (beepTime.empty() ? 0 : lastInserted) + j;
 					beepTime.insert(lastInserted);
 				}
-			}
-			else {
+			} else {
 				lastInserted = j;
 				beepTime.insert(lastInserted);
 			}
 
-		}
-		else { // time or minute mode
+		} else { // time or minute mode
 			if (repeat || strchr("+-", *p)) {
 				ASSERT(j != 0, "invalid increment or decrement value", i)
 				if (isTime()) {
@@ -173,9 +166,9 @@ bool Parameters::parse(bool predefined) {
 						ASSERT_TIME(abs(j), i)
 						j = (j / 100) * 60 + (j % 100);
 					}
-				}
-				else {
-					ASSERT(abs(j) < 60, "invalid increment or decrement value", i)
+				} else {
+					ASSERT(abs(j) < 60, "invalid increment or decrement value",
+							i)
 				}
 
 				if (isTime()) {
@@ -189,20 +182,17 @@ bool Parameters::parse(bool predefined) {
 						if (v.toBeepTime() <= d.toBeepTime()) { //if signal earlier than now
 							if (j < 0) {
 								break;
-							}
-							else { //lastInserted is incremented so just continue
+							} else { //lastInserted is incremented so just continue
 								continue;
 							}
 						}
 						lastInserted = v.toBeepTime();
 						beepTime.insert(lastInserted);
 					}
-				}
-				else {
+				} else {
 					if (beepTime.empty()) {
 						l = d.toInt(false);
-					}
-					else {
+					} else {
 						l = lastInserted;
 					}
 
@@ -215,22 +205,23 @@ bool Parameters::parse(bool predefined) {
 						beepTime.insert(lastInserted);
 					}
 				}
-			}
-			else {
-				ASSERT(isdigit(*p), "argument should start from digit or + or -", i)
+			} else {
+				ASSERT(isdigit(*p),
+						"argument should start from digit or + or -", i)
 				ASSERT(p + strlen(p) == e, "not all string recognized", i)
 				if (isTime()) {
 					ASSERT_TIME(j, i)
 					DateTime q(j, addDays);
 					if (!predefined) {
-						ASSERT(q.toBeepTime() > d.toBeepTime(), "no new value inserted", i)
+						ASSERT(q.toBeepTime() > d.toBeepTime(),
+								"no new value inserted", i)
 					}
 					lastInserted = q.toBeepTime();
 					beepTime.insert(lastInserted);
-				}
-				else {
+				} else {
 					lastInserted = j;
-					ASSERT(j >= 0 && j < 60, "arguments should be from 0 to 59", i)
+					ASSERT(j >= 0 && j < 60, "arguments should be from 0 to 59",
+							i)
 					beepTime.insert(lastInserted);
 				}
 			}
@@ -250,20 +241,19 @@ bool Parameters::parse(bool predefined) {
 }
 
 std::string Parameters::what(bool forLabel) const {
-	const char * separator = forLabel ? " " : "\n";
+	const char *separator = forLabel ? " " : "\n";
 	std::string s;
 	if (forLabel) {
 		s += message;
-	}
-	else {
+	} else {
 		s += "condition " + condition + separator + "message " + message;
 	}
 	if (errorType == 0) {
 		if (argument != -1) {
-			s += separator + format("argument %d", argument + (forLabel ? 0 : 1));
+			s += separator
+					+ format("argument %d", argument + (forLabel ? 0 : 1));
 		}
-	}
-	else {
+	} else {
 		s += separator + std::string("file ") + getPredefinedFileName()
 				+ format(" line %d", argument);
 	}
@@ -276,14 +266,12 @@ std::string Parameters::toString(StringType t) const {
 	std::string s;
 	if (t == StringType::DIALOG) {
 		s = "recognized";
-	}
-	else if (t == StringType::FRAME) {
+	} else if (t == StringType::FRAME) {
 		i = 0;
 		for (auto a : arg) {
 			s += (i++ ? " " : "") + a;
 		}
-	}
-	else {
+	} else {
 		i = 0;
 		for (auto a : arg) {
 			if (i != 0) { //need increment i anyway
@@ -318,7 +306,7 @@ std::string Parameters::toString(StringType t) const {
 	return s;
 }
 
-void Parameters::operator=(const Parameters& p) {
+void Parameters::operator=(const Parameters &p) {
 	mode = p.mode;
 	_minimize = p._minimize;
 	arg = p.arg;
@@ -326,7 +314,7 @@ void Parameters::operator=(const Parameters& p) {
 	lastBeepTime = 0;
 }
 
-void Parameters::addDays(Parameters const&p, int days) {
+void Parameters::addDays(Parameters const &p, int days) {
 	/* relative time time with + or - at the beginning
 	 *
 	 * days=1 & "908+ -30" -> "908 -30"
@@ -365,8 +353,7 @@ void Parameters::addDays(Parameters const&p, int days) {
 	bool ok = true;
 	if (arg.empty()) { //"908+" add two days
 		ok = false;
-	}
-	else {
+	} else {
 		ok = parse(true);
 	}
 
@@ -413,19 +400,16 @@ std::string Parameters::beepTimeFormat(BeepTimeType v, bool icon) const {
 		i = -DateTime().diffDays(v);
 		if (i == 0) {
 			//no + after
-		}
-		else if (i > 0) {
+		} else if (i > 0) {
 			if (icon) {
 				s += "'";
-			}
-			else {
+			} else {
 				s += "+";
 				if (i > 1) {
 					s += format("%d", i);
 				}
 			}
-		}
-		else {
+		} else {
 			assert(0);
 		}
 	}
@@ -439,16 +423,16 @@ std::string Parameters::getPredefinedFileContents() {
 	return writableFileGetContents(getPredefinedFileName());
 }
 
-void Parameters::setPredefinedFileContents(std::string const&s){
+void Parameters::setPredefinedFileContents(std::string const &s) {
 	writableFileSetContents(getPredefinedFileName(), s);
 }
 
-bool Parameters::loadPredefined(std::string const & data) {
+bool Parameters::loadPredefined(std::string const &data) {
 	int i, j, d[3];
 	//line already defined as member of class Parameters.h so use another name instead of line
 	int fileline;
-	const char*p;
-	char*e;
+	const char *p;
+	char *e;
 	std::string s, s1, s2;
 	std::size_t pos, p1;
 	//try to parse into pTime, pSet, pDate, to not corrupt class members in case of error parsing predefined file
@@ -471,8 +455,7 @@ bool Parameters::loadPredefined(std::string const & data) {
 		//removes spaces from the beginning
 		if ((pos = s.find_first_not_of(' ')) == std::string::npos) {
 			s = ""; //only tabs & spaces
-		}
-		else {
+		} else {
 			s = s.substr(pos);
 		}
 
@@ -486,8 +469,7 @@ bool Parameters::loadPredefined(std::string const & data) {
 		//removes spaces at the end of the string
 		if ((pos = s.find_last_not_of(' ')) == std::string::npos) {
 			s = "";
-		}
-		else {
+		} else {
 			s = s.substr(0, pos + 1);
 		}
 
@@ -497,8 +479,8 @@ bool Parameters::loadPredefined(std::string const & data) {
 
 		if (predefinedDate) {
 			//special date
-			for (p1 = s.find('.') + 1; isdigit(s[p1]) || s[p1] == '.' || s[p1] == '*';
-					p1++)
+			for (p1 = s.find('.') + 1;
+					isdigit(s[p1]) || s[p1] == '.' || s[p1] == '*'; p1++)
 				;
 			//tabs changes to spaces
 			ASSERT_LINE(s[p1] == ' ' || s[p1] == 0,
@@ -514,7 +496,8 @@ bool Parameters::loadPredefined(std::string const & data) {
 			i = 0;
 			auto vv = split(s1, ".");
 			//allow 13.3 or 13.3.2020 or 15.*
-			ASSERT_LINE(vv.size() >= 2 && vv.size() <= 3, "invalid predefined day");
+			ASSERT_LINE(vv.size() >= 2 && vv.size() <= 3,
+					"invalid predefined day");
 			d[2] = 0;
 			for (auto v : vv) {
 				p = v.c_str();
@@ -523,7 +506,8 @@ bool Parameters::loadPredefined(std::string const & data) {
 					continue;
 				}
 				d[i] = strtol(p, &e, 10);
-				ASSERT_LINE(p + strlen(p) == e, "not all string recognized [" + s + "]");
+				ASSERT_LINE(p + strlen(p) == e,
+						"not all string recognized [" + s + "]");
 				if (i == 2 && d[2] < 100) {
 					//allow 19 instead of 2019
 					d[2] += (dt.year() / 100) * 100;
@@ -533,22 +517,15 @@ bool Parameters::loadPredefined(std::string const & data) {
 
 			ASSERT_LINE(d[0] >= 1, "invalid predefined day");
 			ASSERT_LINE(d[1] == ANY_MONTH || (d[1] >= 1 && d[1] <= 12),
-					"invalid predefined month [" + s1 + "]. month out of bounds");
+					"invalid predefined month [" + s1
+							+ "]. month out of bounds");
 
 			i = d[2]; //i==0 means every year
-			const int DMAX[] = {
-					31,
-					i == 0 ? 29 : 28 + (i % 400 == 0 || (i % 100 != 0 && i % 4 == 0)),
-					31,
-					30,
-					31,
-					30,
-					31,
-					31,
-					30,
-					31,
-					30,
-					31 };
+			const int DMAX[] = { 31,
+					i == 0 ?
+							29 :
+							28 + (i % 400 == 0 || (i % 100 != 0 && i % 4 == 0)),
+					31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 			if (d[1] != ANY_MONTH) {
 				ASSERT_LINE(d[0] <= DMAX[d[1] - 1],
 						"invalid predefined date. day out of bound");
@@ -556,16 +533,18 @@ bool Parameters::loadPredefined(std::string const & data) {
 
 			i = d[0] + (d[1] + d[2] * 100) * 100;
 			j = getYYYYMMDD(dt.toBeepTime());
-			if (d[1] != ANY_MONTH && d[2] != 0 && i<j) { //special year is set
-				if(yesNoDialog("set date which already past skip it?\n"+ss+"\nIf you skip all past dates then file will be rewritten.")){
+			if (d[1] != ANY_MONTH && d[2] != 0 && i < j) { //special year is set
+				if (yesNoDialog(
+						"set date which already past skip it?\n" + ss
+								+ "\nIf you skip all past dates then file will be rewritten.")) {
 					vskiplines.push_back(fileline);
 					continue;
-				}
-				else{
-					ASSERT_LINE(i>=j, "set date which already past");
+				} else {
+					ASSERT_LINE(i >= j, "set date which already past");
 				}
 			}
-			ASSERT_LINE(!has(pDate, i), "repeat predefined parameter [" + s + "]");
+			ASSERT_LINE(!has(pDate, i),
+					"repeat predefined parameter [" + s + "]");
 			pDate.push_back( { i, s2 });
 			continue;
 		}
@@ -577,7 +556,7 @@ bool Parameters::loadPredefined(std::string const & data) {
 		 */
 		auto v = split(s, " ");
 		i = 0;
-		for (auto& a : TITLE) {
+		for (auto &a : TITLE) {
 			if (v[0][0] == a[0]) {
 				if (!parse(s, true)) { //don't call ASSERT_LINE store error message
 					argument = fileline;
@@ -586,7 +565,8 @@ bool Parameters::loadPredefined(std::string const & data) {
 					return false;
 				}
 
-				ASSERT_LINE(std::find(pSet.begin(), pSet.end(), s) == pSet.end(),
+				ASSERT_LINE(
+						std::find(pSet.begin(), pSet.end(), s) == pSet.end(),
 						"repeat predefined parameter [" + s + "]");
 				pSet.push_back(s);
 				i = 1;
@@ -602,14 +582,14 @@ bool Parameters::loadPredefined(std::string const & data) {
 		vi.clear();
 		s = v[0];
 		//1-4,5 1707
-		for (auto& t : split(s, ",")) {
-			ASSERT_LINE(t.length() == 1 || t.length() == 3, "invalid week day string");
+		for (auto &t : split(s, ",")) {
+			ASSERT_LINE(t.length() == 1 || t.length() == 3,
+					"invalid week day string");
 			i = t[0] - '0';
 			ASSERT_LINE(i > 0 && i < 8, "invalid week day found");
 			if (t.length() == 1) {
 				vi.push_back(i);
-			}
-			else {
+			} else {
 				j = t[2] - '0';
 				ASSERT_LINE(t[1] == '-', "invalid second symbol in range");
 				ASSERT_LINE(i < j, "invalid range lower bound >= upper bound");
@@ -620,8 +600,8 @@ bool Parameters::loadPredefined(std::string const & data) {
 			}
 		}
 
-		for (auto& t : vi) {
-			auto& set = pTime[t];
+		for (auto &t : vi) {
+			auto &set = pTime[t];
 
 			i = 0;
 			for (auto a : v) {
@@ -633,10 +613,12 @@ bool Parameters::loadPredefined(std::string const & data) {
 					}
 					j = strtol(p, &e, 10);
 					ASSERT_LINE(p + strlen(p) == e,
-							"not all string recognized [" + a + "] from predefined file");
+							"not all string recognized [" + a
+									+ "] from predefined file");
 					ASSERT_TIME_LINE(j);
 					ASSERT_LINE(set.insert(j).second,
-							format("repeated time %d for ", j) + DateTime::weekdayName(t));
+							format("repeated time %d for ", j)
+									+ DateTime::weekdayName(t));
 				}
 
 				i++;
@@ -644,24 +626,22 @@ bool Parameters::loadPredefined(std::string const & data) {
 		}
 	}
 
-	if(!vskiplines.empty()){
+	if (!vskiplines.empty()) {
 		//overwrite file
 		fileline = 0;
 		for (auto ss : vd) {
 			fileline++;
-			if(!oneOf(fileline,vskiplines)){
+			if (!oneOf(fileline, vskiplines)) {
 				vo.push_back(ss);
-			}
-			else{
+			} else {
 //				printl(ss);
 			}
 		}
-		setPredefinedFileContents(joinV(vo,'\n'));
+		setPredefinedFileContents(joinV(vo, '\n'));
 	}
 
-
 	i = 0;
-	for (auto& a : pTime) {
+	for (auto &a : pTime) {
 		predefinedTime[i++] = a;
 	}
 	predefinedSet = pSet;
@@ -695,14 +675,15 @@ DateTime Parameters::getUpcoming() {
 	DateTime d;
 	int v = d.toInt();
 	int wday = d.day_of_week();
-	auto& s = getPredefinedTime(wday);
-	auto it = std::find_if(s.cbegin(), s.cend(), [&] (auto e) {return v < e;});
+	auto &s = getPredefinedTime(wday);
+	auto it = std::find_if(s.cbegin(), s.cend(), [&](auto e) {
+		return v < e;
+	});
 
 	bool tomorrow = it == s.cend();
 	if (tomorrow) { //example 2300 means 1st item of next day
 		t = *getPredefinedTime(wday == 7 ? 1 : wday + 1).begin();
-	}
-	else {
+	} else {
 		t = *it;
 	}
 
@@ -740,7 +721,7 @@ std::string Parameters::getPredefinedTimeString(DialogType dt) {
 }
 
 std::string Parameters::getPredefinedTimeString(int wday) {
-	auto& a = predefinedTime[wday];
+	auto &a = predefinedTime[wday];
 	if (a.empty()) {
 		return "";
 	}
@@ -752,14 +733,14 @@ std::string Parameters::getPredefinedTimeString(int wday) {
 
 }
 
-void Parameters::staticInit(const char*file) {
+void Parameters::staticInit(const char *file) {
 	// d.format("%b")-short month name doesn't work if not make putenv
 	putenv("LANG=C.UTF-8");
 	DateTime d;
 	auto s = d.format("start %d %b %Y %H:%M:%S\n");
 
 	GFile *gf = g_file_new_for_path(file);
-	GError* error = 0;
+	GError *error = 0;
 	auto fi = g_file_query_info(gf, G_FILE_ATTRIBUTE_TIME_MODIFIED,
 			G_FILE_QUERY_INFO_NONE, NULL, &error);
 	g_assert_no_error(error);
@@ -779,7 +760,7 @@ void Parameters::staticInit(const char*file) {
 	 * not always working, because this file sometimes isn't changed
 	 * */
 	d.initTimeZone(v);
-	infoString = getVersionString(false) +"\n"+ s
+	infoString = getVersionString(false) + "\n" + s
 			+ d.format("build %d %b %Y %H:%M:%S");
 
 }
@@ -787,7 +768,8 @@ void Parameters::staticInit(const char*file) {
 void Parameters::upcoming() {
 	DateTime t = getUpcoming();
 	parse(
-			format("%c%c %d%s", *TITLE[int(Mode::TIME)], MINIMIZE_CHAR, t.toInt(),
+			format("%c%c %d%s", *TITLE[int(Mode::TIME)], MINIMIZE_CHAR,
+					t.toInt(),
 					DateTime().day_of_week() == t.day_of_week() ? "" : "+"));
 }
 
@@ -801,8 +783,10 @@ void Parameters::upcomingAll() {
 		return;
 	}
 	int t = d.toInt();
-	auto& p = getPredefinedTime(wday);
-	auto it = std::find_if(p.cbegin(), p.cend(), [&] (auto e) {return t < e;});
+	auto &p = getPredefinedTime(wday);
+	auto it = std::find_if(p.cbegin(), p.cend(), [&](auto e) {
+		return t < e;
+	});
 
 	assert(it != p.cend());
 	std::string s = format("%c%c", *TITLE[int(Mode::TIME)], MINIMIZE_CHAR);
@@ -861,14 +845,12 @@ bool Parameters::isPredefinedDate() {
 				if (getDD(d) == getDD(md)) {
 					return true;
 				}
-			}
-			else {
+			} else {
 				if (d == md) {
 					return true;
 				}
 			}
-		}
-		else {
+		} else {
 			if (d == ymd) {
 				return true;
 			}
@@ -877,7 +859,7 @@ bool Parameters::isPredefinedDate() {
 	return false;
 }
 
-void Parameters::copyAddDays(const Parameters& p) {
+void Parameters::copyAddDays(const Parameters &p) {
 	setupTime.setNow();
 	int i = setupTime.diffDays(p.setupTime);
 	if (!p.isTime() || i == 0) {
@@ -889,12 +871,14 @@ void Parameters::copyAddDays(const Parameters& p) {
 	addDays(p, i);
 }
 
-void Parameters::removeUntilTime(std::set<BeepTimeType>& b,
-		BeepTimeType const& t) {
-	auto it = std::find_if(b.cbegin(), b.cend(), [&] (auto e) {return t < e;});
+void Parameters::removeUntilTime(std::set<BeepTimeType> &b,
+		BeepTimeType const &t) {
+	auto it = std::find_if(b.cbegin(), b.cend(), [&](auto e) {
+		return t < e;
+	});
 	b.erase(b.begin(), it);
 }
 
-std::string Parameters::getPredefinedFileName(){
+std::string Parameters::getPredefinedFileName() {
 	return getApplicationName() + PREDEFINED_FILE_NAME;
 }

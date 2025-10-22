@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #include "DateTime.h"
@@ -16,8 +16,7 @@ DateTime::DateTime(int time, int addDays) :
 		d(0) {
 	if (addDays == 0) {
 		setNow();
-	}
-	else {
+	} else {
 		init(g_date_time_add_days(DateTime().d, addDays));
 	}
 	init(format("%FT") + ::format("%04d00", time));
@@ -46,7 +45,7 @@ void DateTime::initTimeZone(gint64 v) {
 	init(g_date_time_to_timezone(d, config.tz)); //adjust daylight save
 }
 
-void DateTime::init(std::string const& iso) {
+void DateTime::init(std::string const &iso) {
 	init(g_date_time_new_from_iso8601(iso.c_str(), config.tz));
 }
 

@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #ifndef DIGITALFONTPARAMETERS_H_
@@ -18,7 +18,7 @@ public:
 	int width, height;
 	bool isotropic;
 	//std::string toString() const;
-	void fromString(std::string const&s);
+	void fromString(std::string const &s);
 };
 
 std::ostream& operator<<(std::ostream&, DigitalFontParameters const&);

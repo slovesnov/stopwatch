@@ -5,7 +5,7 @@
  *           Author: aleksey slovesnov
  * Copyright(c/c++): 2019-doomsday
  *           E-mail: slovesnov@yandex.ru
- *         Homepage: slovesnov.users.sourceforge.net
+ *         Homepage: slovesnov.rf.gd
  */
 
 #ifndef CONFIG_H_
@@ -45,17 +45,17 @@ public:
 
 	VString getArguments() const;
 
-	static const int MAX_VOLUME=0xffff;
+	static const int MAX_VOLUME = 0xffff;
 	double getSoundVolume() const {
 		return soundVolume / double(MAX_VOLUME);
 	}
 
-	static int getSoundVolumeValue(double volume){
-		return int(volume*MAX_VOLUME);
+	static int getSoundVolumeValue(double volume) {
+		return int(volume * MAX_VOLUME);
 	}
 
-	void setSoundVolume(double v){
-		soundVolume=getSoundVolumeValue(v);
+	void setSoundVolume(double v) {
+		soundVolume = getSoundVolumeValue(v);
 	}
 };
 
