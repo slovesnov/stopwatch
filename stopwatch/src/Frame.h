@@ -24,7 +24,7 @@ class Frame: public Parameters {
 	Point maxAreaSize = { 0, 0 }; //indicator that countAreaSize isn't called
 	clock_t lastTime;
 	clock_t startTime; //for stopwatch mode
-	bool timerRunning; //for stopwatch mode
+	bool timerRunning = false; //for stopwatch mode
 	std::set<BeepTimeType>::const_iterator beepIt; //for stopwatch mode
 	int fs[2] = { 0 }; //font size
 	cairo_surface_t *surface;
