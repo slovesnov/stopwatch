@@ -46,6 +46,7 @@ void Config::init() {
 	int i, k;
 	int64_t ll;
 	std::string s;
+	char c;
 
 	timeZone = DEFAULT_TIME_ZONE;
 	digitalMode = 0;
@@ -66,7 +67,8 @@ void Config::init() {
 			i = INDEX_OF(a.first, CONFIG_TAGS);
 			s = a.second;
 			if (i == captionsSizeIndex) {
-				captionsSize.fromString(s);
+				std::istringstream in(s);
+				in>>captionsSize.x>>c>>captionsSize.y;
 			} else if (i == lastSetTimeIndex) {
 				if (!s.empty()) { //s.empty() if was stopwatch mode
 					auto v = split(s, " ");

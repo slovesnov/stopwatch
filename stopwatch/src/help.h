@@ -13,7 +13,6 @@
 
 #include <ctime>
 #include <fstream>
-#include "Point.h"
 
 #include "aslov.h"
 //#define BASE_ADDONS

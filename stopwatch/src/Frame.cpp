@@ -770,7 +770,7 @@ void Frame::setColor(cairo_t *cr) {
 
 DigitalFont Frame::createDigitalFont() {
 	auto s = W[isStopwatch()];
-	Point p(maxAreaSize);
+	CPoint p(maxAreaSize);
 	p.y -= config.additionalHeight;
 	return DigitalFont(config.maxDigitalClockSize[isStopwatch()], p, s);
 }

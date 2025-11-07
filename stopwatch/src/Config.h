@@ -21,7 +21,7 @@ class Config {
 public:
 
 	GTimeZone *tz;
-	Point captionsSize;
+	CPoint captionsSize;
 	int timeZone;
 	int digitalMode;
 	int closeWarning;

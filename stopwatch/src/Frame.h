@@ -21,7 +21,7 @@
 
 class Frame: public Parameters {
 	GtkWidget *area[3], *box, *button[2];
-	Point maxAreaSize = { 0, 0 }; //indicator that countAreaSize isn't called
+	CPoint maxAreaSize = { 0, 0 }; //indicator that countAreaSize isn't called
 	clock_t lastTime;
 	clock_t startTime; //for stopwatch mode
 	bool timerRunning = false; //for stopwatch mode

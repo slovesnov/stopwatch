@@ -105,7 +105,7 @@ void DigitalFont::drawString(const std::string &s, cairo_t *cr) {
 	}
 }
 
-DigitalFont::DigitalFont(DigitalFontParameters const &p, Point const &maxSize,
+DigitalFont::DigitalFont(DigitalFontParameters const &p, CPoint const &maxSize,
 		const std::string &s) {
 	auto a = getK(s);
 	auto w = std::min(p.width, maxSize.x) / a.first;

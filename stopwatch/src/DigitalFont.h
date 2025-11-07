@@ -12,8 +12,7 @@
 #define DIGITALFONT_H_
 
 #include "DigitalFontParameters.h"
-#include <string>
-#include <gtk/gtk.h>
+#include <aslov.h>
 
 using PDD = std::pair<double,double>;
 
@@ -52,7 +51,7 @@ public:
 		init(size, size, _angleMargin);
 	}
 
-	DigitalFont(DigitalFontParameters const &p, Point const &maxSize,
+	DigitalFont(DigitalFontParameters const &p, CPoint const &maxSize,
 			const std::string &s);
 
 	void drawDigit(int n, cairo_t *cr);

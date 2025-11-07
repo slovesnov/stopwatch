@@ -11,7 +11,7 @@
 #ifndef DIGITALFONTPARAMETERS_H_
 #define DIGITALFONTPARAMETERS_H_
 
-#include "Point.h"
+#include <iostream>
 
 class DigitalFontParameters {
 public:
