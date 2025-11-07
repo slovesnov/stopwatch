@@ -22,8 +22,9 @@
 class Frame: public Parameters {
 	GtkWidget *area[3], *box, *button[2];
 	Point maxAreaSize = { 0, 0 }; //indicator that countAreaSize isn't called
-	clock_t startTime = 0;
 	clock_t lastTime;
+	clock_t startTime; //for stopwatch mode
+	bool timerRunning; //for stopwatch mode
 	std::set<BeepTimeType>::const_iterator beepIt; //for stopwatch mode
 	int fs[2] = { 0 }; //font size
 	cairo_surface_t *surface;
@@ -119,6 +120,8 @@ public:
 	bool parse(const std::string s, bool predefined = false) {
 		return Parameters::parse(s, predefined);
 	}
+
+	double getTime();
 
 #ifndef NDEBUG
 	//for testing some functionality

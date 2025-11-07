@@ -112,10 +112,6 @@ void exploreAllChildrenRecursive(GtkWidget* w) {
 }
 #endif
 
-double secondsSince(clock_t t) {
-	return double(clock() - t) / CLOCKS_PER_SEC;
-}
-
 int getYYYYMMDD(BeepTimeType v) {
 	return v / BTDIVISOR;
 }

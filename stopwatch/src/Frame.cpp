@@ -166,6 +166,8 @@ Frame::~Frame() {
 
 void Frame::startTimer() {
 	lastTime = startTime = clock(); //start time immediately
+	timerRunning = true;
+	beepIt = beepTime.cbegin();
 	g_timeout_add(MILLISECONDS, time_function, 0); //g_idle_add is more evenly than g_timeout_add_seconds but hard for CPU
 	//g_timeout_add_seconds(1, time_function, 0);
 }
@@ -256,7 +258,7 @@ void Frame::draw() {
 	gtk_render_background(context, cr, 0, 0, width, height);
 
 	if (stopwatch) {
-		i = startTime == 0 ? 0 : secondsSince(startTime);
+		i = getTime();
 		s = format("%02d:%02d", i / 60, i % 60);
 	} else {
 		s = d.format("%H:%M:%S");
@@ -388,11 +390,9 @@ void Frame::draw() {
 		cairo_set_line_width(cr, k);
 		for (j = stopwatch ? 2 : 0; j < 3; j++) {
 			if (j == 2) {
-				if (stopwatch) {
-					i = startTime == 0 ? 0 : secondsSince(startTime);
-				} else {
-					i = d.second();
-				}
+
+				i = stopwatch ? getTime() : d.second();
+
 				v = i / 60.;
 			} else {
 				v = (d.second() / 60. + d.minute()) / 60;
@@ -484,8 +484,7 @@ gboolean Frame::draw(GtkWidget *w, cairo_t *c) {
 	/* do draw() only 1 time
 	 * because draw functions calls from several areas
 	 */
-	if (lastDrawTime == 0
-			|| secondsSince(lastDrawTime) >= MILLISECONDS / 1000.) {
+	if (lastDrawTime == 0 || timeElapse(lastDrawTime) >= MILLISECONDS / 1000.) {
 		draw();
 		lastDrawTime = clock();
 	}
@@ -508,18 +507,13 @@ gboolean Frame::draw(GtkWidget *w, cairo_t *c) {
 
 gboolean Frame::timeFunction() {
 	setIcon();
-	if (startTime == 0) {
-		paint();
-		beepIt = beepTime.cbegin();
-		return G_SOURCE_REMOVE;
-	}
 	//function returns double so cann't use secondsSince(lastTime) > 0
-	if (secondsSince(lastTime) >= 1) {
+	if (timeElapse(lastTime) >= 1) {
 		int i;
 		lastTime = clock();
 		//beep
 		if (isStopwatch()) {
-			i = startTime == 0 ? 0 : secondsSince(startTime);
+			i = getTime();
 			if (beepIt != beepTime.cend() && i >= *beepIt) {
 				beepIt++;
 				beep();
@@ -588,18 +582,17 @@ void Frame::onKeyPress(GdkEventKey *e) {
 
 //	println("%x %x",e->keyval,e->state)
 
-	if (!isStopwatch()) {
-		return;
+	if (isStopwatch()) {
+		if (timerRunning) {
+			timerRunning = false;
+			draw();
+			paint();
+		} else {
+			beep();
+			startTimer();
+		}
 	}
 
-	if (startTime == 0) {
-		beep();
-		startTimer();
-	} else {
-		startTime = 0;
-		draw();
-		paint();
-	}
 }
 
 void Frame::updateParse() {
@@ -615,11 +608,11 @@ void Frame::updateParse() {
 	}
 
 	if (isStopwatch()) {
-		startTime = 0; //stop timer if run anyway
+		timerRunning = false;
 		draw();
 		paint();
 	} else { //switch to reminder or time mode
-		if (startTime == 0) { //if timer is not run
+		if (!timerRunning) { //if timer is not run
 			startTimer();	//start timer
 		}
 	}
@@ -633,7 +626,7 @@ void Frame::setIcon() {
 	GdkPixbuf *p;
 
 	if (isStopwatch()) {
-		i = startTime == 0 ? 0 : secondsSince(startTime);
+		i = getTime();
 		//000 not 0000 to make bigger font, also do not output 0:00 for the same reason
 		assert(i >= 0);
 		s = format("%d%02d", i / 60, i % 60);
@@ -765,7 +758,7 @@ void Frame::saveImage() {
 
 gboolean Frame::windowStateEvent(GdkEventWindowState *e) {
 	//if timer isn't run in stopwatch mode change underlined / normal text
-	if (isStopwatch() && startTime == 0) {
+	if (isStopwatch() && !timerRunning) {
 		setIcon();
 	}
 	return TRUE;
@@ -780,6 +773,10 @@ DigitalFont Frame::createDigitalFont() {
 	Point p(maxAreaSize);
 	p.y -= config.additionalHeight;
 	return DigitalFont(config.maxDigitalClockSize[isStopwatch()], p, s);
+}
+
+double Frame::getTime() {
+	return timerRunning ? timeElapse(startTime) : 0;
 }
 
 #ifndef NDEBUG
