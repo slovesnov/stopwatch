@@ -38,9 +38,8 @@ bool Parameters::parse(int argc, char *argv[]) {
 #define ASSERT_TIME(t,a) ASSERT_TIME_FULL(t,a,0)
 
 bool Parameters::parse(int combo, int minimize, const char *p) {
-	ASSERT1(strlen(p) != 0, "no arguments")
-	std::string s;
-	s += *TITLE[combo];
+	ASSERT1(combo == int(Mode::STOPWATCH) || strlen(p) != 0, "no arguments")
+	std::string s(1, *TITLE[combo]);
 	if (minimize) {
 		s += MINIMIZE_CHAR;
 	}
@@ -76,7 +75,7 @@ bool Parameters::parse(bool predefined) {
 	bool repeat;
 	DateTime d;
 
-	ASSERT1(arg.size() > 1, "too few arguments")
+	ASSERT1(arg.size() > 0, "too few arguments")
 
 	p = arg[0].c_str();
 	ASSERT(!arg[0].empty(), "empty argument", 0)
@@ -89,6 +88,8 @@ bool Parameters::parse(bool predefined) {
 	}
 	mode = Mode(i);
 	ASSERT(mode != Mode::MODE_SIZE, "unknown mode", 0)
+
+	ASSERT1(isStopwatch() || arg.size() > 1, "too few arguments")
 
 	//after mode is set
 	i = strlen(p);
@@ -233,7 +234,7 @@ bool Parameters::parse(bool predefined) {
 	}
 
 	//for sureness
-	ASSERT1(!beepTime.empty(), "beep time is empty")
+	ASSERT1(isStopwatch() || !beepTime.empty(), "beep time is empty")
 
 	lastBeepTime = 0;
 	setupTime.setNow();
@@ -285,14 +286,14 @@ std::string Parameters::toString(StringType t) const {
 		return s;
 	}
 
-	assert(!beepTime.empty());
 	i = 0;
-	DateTime d;
+	s += " [";
 	for (auto a : beepTime) {
-		s += " ";
-		s += i ? "" : "[";
+		if (i)
+			s += " ";
+		else
+			i = 1;
 		s += beepTimeFormat(a, false);
-		i = 1;
 	}
 	s += "]";
 
