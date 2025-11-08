@@ -41,7 +41,7 @@ public:
 	 */
 	DateTime(DateTime const &q) :
 			d(0) {
-		*this = q;
+		fromBeepTime(q.toBeepTime());
 	}
 
 	DateTime(int day, int month, int year) :
@@ -60,10 +60,6 @@ public:
 	void setNow();
 
 	void initTimeZone(gint64 v);
-
-	void operator=(DateTime const &v) {
-		fromBeepTime(v.toBeepTime());
-	}
 
 	int toInt(bool fullTime = true) const {
 		int i = minute();
