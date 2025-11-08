@@ -25,9 +25,10 @@ enum class DialogType {
 	PARAMETERS, ERROR, MESSASE, DIALOG_TYPE_SIZE
 };
 
-using BeepTimeType=int64_t;
-using PredefinedDateType=std::pair<int, std::string>;
-using VPredefinedDateType=std::vector<PredefinedDateType>;
+using BeepTimeType = int64_t;
+//2025,1108,0817 max(int64_t)=9,223,372,036,854,775,807
+using PredefinedDateType = std::pair<int, std::string>;
+using VPredefinedDateType = std::vector<PredefinedDateType>;
 
 const char UPCOMING[] = "upcoming";
 const int BTDIVISOR = 10000;

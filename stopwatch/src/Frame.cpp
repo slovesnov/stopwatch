@@ -18,7 +18,7 @@
  * even if timeFunction call several times during one second
  * draw calls one time only
  */
-const int MILLISECONDS = 250;
+const int MILLISECONDS = 500;
 const GdkRGBA COLOR[] = { { 0, 0, 0, 1 }, { 0, 0, .5, 1 } };
 const char *W[] = { "00:00:00", "00:00" };
 
