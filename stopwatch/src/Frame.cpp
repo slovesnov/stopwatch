@@ -172,6 +172,12 @@ void Frame::startTimer() {
 	//g_timeout_add_seconds(1, time_function, 0);
 }
 
+void Frame::stopTimer() {
+	timerRunning = false;
+	draw();
+	paint();
+}
+
 void Frame::moveSizeWindow(bool b) {
 	GdkMonitor *monitor = gdk_display_get_monitor(gdk_display_get_default(), 0);
 	GdkRectangle wr;
@@ -582,9 +588,7 @@ void Frame::onKeyPress(GdkEventKey *e) {
 
 	if (isStopwatch()) {
 		if (timerRunning) {
-			timerRunning = false;
-			draw();
-			paint();
+			stopTimer();
 		} else {
 			beep();
 			startTimer();
@@ -606,9 +610,7 @@ void Frame::updateParse() {
 	}
 
 	if (isStopwatch()) {
-		timerRunning = false;
-		draw();
-		paint();
+		stopTimer();
 	} else { //switch to reminder or time mode
 		if (!timerRunning) { //if timer is not run
 			startTimer();	//start timer

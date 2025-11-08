@@ -36,6 +36,7 @@ public:
 	GtkWidget *window = NULL;
 
 	void startTimer();
+	void stopTimer();
 	void moveSizeWindow(bool b = true);
 
 	auto getTitle() const {
