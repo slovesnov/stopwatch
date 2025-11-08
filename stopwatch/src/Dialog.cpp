@@ -127,11 +127,9 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		w3 = gtk_label_new("predefined sets");
 		gtk_widget_set_margin_top(w3, 3);
 		gtk_container_add(GTK_CONTAINER(w2), w3);
-
-		comboPredefinedSet = gtk_combo_box_text_new();
+		mPredefined = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+		gtk_container_add(GTK_CONTAINER(w2), mPredefined);
 		fillPredefinedSet();
-		gtk_widget_set_halign(comboPredefinedSet, GTK_ALIGN_CENTER);
-		gtk_container_add(GTK_CONTAINER(w2), comboPredefinedSet);
 	}
 
 	s = getImagePath(DIALOG_ICON[int(dt)] + std::string(".png"));
@@ -240,19 +238,21 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		g_signal_connect(entry, "activate", G_CALLBACK(entry_activated), 0); //call on enter or return key pressed
 		g_signal_connect(minimizeCheck, "toggled", G_CALLBACK(check_changed),
 				0);
-		g_signal_connect(okButton, "clicked", G_CALLBACK(button_clicked), 0);
-		g_signal_connect(upcomingButton, "clicked", G_CALLBACK(button_clicked),
-				0);
-		g_signal_connect(comboPredefinedSet, "changed",
-				G_CALLBACK(combo_changed), 0);
-		g_signal_connect(helpButton, "clicked", G_CALLBACK(button_clicked), 0);
-		g_signal_connect(editButton, "clicked", G_CALLBACK(button_clicked), 0);
-		g_signal_connect(reloadButton, "clicked", G_CALLBACK(button_clicked),
-				0);
-		g_signal_connect(upcomingAllButton, "clicked",
-				G_CALLBACK(button_clicked), 0);
-		g_signal_connect(testSoundButton, "clicked", G_CALLBACK(button_clicked),
-				0);
+		for (auto a : { okButton, upcomingButton, helpButton, editButton,
+				reloadButton, upcomingAllButton, testSoundButton })
+			g_signal_connect(a, "clicked", G_CALLBACK(button_clicked), 0);
+//		g_signal_connect(okButton, "clicked", G_CALLBACK(button_clicked), 0);
+//		g_signal_connect(upcomingButton, "clicked", G_CALLBACK(button_clicked),
+//				0);
+//		g_signal_connect(helpButton, "clicked", G_CALLBACK(button_clicked), 0);
+//		g_signal_connect(editButton, "clicked", G_CALLBACK(button_clicked), 0);
+//		g_signal_connect(reloadButton, "clicked", G_CALLBACK(button_clicked),
+//				0);
+//		g_signal_connect(upcomingAllButton, "clicked",
+//				G_CALLBACK(button_clicked), 0);
+//		g_signal_connect(testSoundButton, "clicked", G_CALLBACK(button_clicked),
+//				0);
+
 		g_signal_connect(digitalModeCheck, "toggled", G_CALLBACK(check_changed),
 				0);
 		g_signal_connect(closeWarningCheck, "toggled",
@@ -342,6 +342,9 @@ void Dialog::buttonClicked(GtkWidget *w) {
 	} else if (w == testSoundButton) {
 		int volume = Config::getSoundVolumeValue(soundVolume);
 		beep(volume);
+	} else {
+		std::string s = predefinedSet[getContainerIndex(mPredefined, w)];
+		updateParametersChanges(parse(s));
 	}
 }
 
@@ -400,18 +403,19 @@ void Dialog::modifyMinimizeCheck() {
 
 void Dialog::updateReload() {
 	signals = false;
-	//gtk_combo_box_text_remove_all call comboChanged event
-	gtk_combo_box_text_remove_all(GTK_COMBO_BOX_TEXT(comboPredefinedSet));
 	fillPredefinedSet();
 	signals = true;
 	updateLabelInfo();
 }
 
 void Dialog::fillPredefinedSet() {
+	clearContainer(mPredefined);
 	for (auto &a : predefinedSet) {
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboPredefinedSet),
-				a.c_str());
+		auto b = gtk_button_new_with_label(a.c_str());
+		gtk_container_add(GTK_CONTAINER(mPredefined), b);
+		g_signal_connect(b, "clicked", G_CALLBACK(button_clicked), 0);
 	}
+	gtk_widget_show_all(mPredefined);
 }
 
 void Dialog::updateLabelInfo() {
@@ -428,17 +432,6 @@ void Dialog::comboChanged(GtkComboBox *w) {
 	if (w == GTK_COMBO_BOX(comboMode)) {
 		modifyMinimizeCheck();
 		entryChanged();
-	} else {
-		gchar *p = gtk_combo_box_text_get_active_text(
-				GTK_COMBO_BOX_TEXT(comboPredefinedSet));
-		std::string s = p;
-		g_free(p);
-
-		/* in case of error update entry anyway
-		 * error can appear when now 1000 and select predefined "tm 845"
-		 * error - time already past
-		 */
-		updateParametersChanges(parse(s));
 	}
 }
 

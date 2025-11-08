@@ -14,7 +14,7 @@
 #include "Parameters.h"
 
 class Dialog: public Parameters {
-	GtkWidget *dialog, *entry, *comboMode, *comboPredefinedSet, *lError, *lInfo;
+	GtkWidget *dialog, *entry, *comboMode, *lError, *lInfo, *mPredefined;
 	GtkWidget *minimizeCheck, *digitalModeCheck, *closeWarningCheck, *volume;
 	GtkWidget *okButton, *copyButton, *upcomingButton, *helpButton,
 			*reloadButton, *upcomingAllButton, *editButton, *testSoundButton;
