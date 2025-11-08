@@ -390,9 +390,7 @@ void Frame::draw() {
 		cairo_set_line_width(cr, k);
 		for (j = stopwatch ? 2 : 0; j < 3; j++) {
 			if (j == 2) {
-
 				i = stopwatch ? getTime() : d.second();
-
 				v = i / 60.;
 			} else {
 				v = (d.second() / 60. + d.minute()) / 60;

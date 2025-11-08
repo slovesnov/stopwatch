@@ -68,7 +68,7 @@ void Config::init() {
 			s = a.second;
 			if (i == captionsSizeIndex) {
 				std::istringstream in(s);
-				in>>captionsSize.x>>c>>captionsSize.y;
+				in >> captionsSize.x >> c >> captionsSize.y;
 			} else if (i == lastSetTimeIndex) {
 				if (!s.empty()) { //s.empty() if was stopwatch mode
 					auto v = split(s, " ");

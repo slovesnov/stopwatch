@@ -14,8 +14,6 @@
 #include "DigitalFontParameters.h"
 #include <aslov.h>
 
-using PDD = std::pair<double,double>;
-
 class DigitalFont {
 	//width - full width, height -  full height
 	double width, height, angleMargin, symbolMargin;
@@ -40,7 +38,7 @@ class DigitalFont {
 				sizex * kSymbolMargin, _angleMargin);
 	}
 
-	PDD getSize() const {
+	PairDoubleDouble getSize() const {
 		return std::make_pair(width - 2 * thicknessx,
 				(height - 3 * thicknessy) / 2);
 	}
@@ -60,13 +58,13 @@ public:
 	//draw string in rectangle center vertically & horizontally
 	void drawString(GdkRectangle const &r, const std::string &s, cairo_t *cr);
 
-	static PDD getK(const std::string &s);
+	static PairDoubleDouble getK(const std::string &s);
 
 	//getK(s)*getSize() = full string {width,height}
-	PDD getStringSize(const std::string &s) const {
+	PairDoubleDouble getStringSize(const std::string &s) const {
 		auto a = getK(s);
 		auto d = getSize();
-		return PDD(a.first * d.first, a.second * d.second);
+		return {a.first * d.first, a.second * d.second};
 	}
 
 };

@@ -31,28 +31,28 @@ void DigitalFont::drawDigit(int n, cairo_t *cr) {
 	double x, y;
 	int i, j;
 	const char b = digitCode[n];
-	std::vector<PDD> a, c;
+	std::vector<PairDoubleDouble> a, c;
 
 	for (i = 0; i < 7; i++) {
 		if (i == 3) {
 			//left-up vertical
-			a = { PDD(0, angleMargin), PDD(0, h - thicknessy / 2 - angleMargin),
-					PDD(thicknessx / 2, h - angleMargin / 2), PDD(thicknessx,
-							h - thicknessy / 2 - angleMargin), PDD(thicknessx,
-							thicknessy + angleMargin) };
+			a = { { 0, angleMargin }, { 0, h - thicknessy / 2 - angleMargin }, {
+					thicknessx / 2, h - angleMargin / 2 }, { thicknessx, h
+					- thicknessy / 2 - angleMargin }, { thicknessx, thicknessy
+					+ angleMargin } };
 		} else if (i == 0 || i == 2) {
 			if (i == 0) {
-				a = { PDD(thicknessx + angleMargin, thicknessy), PDD(
-						angleMargin, 0), };
+				a = { { thicknessx + angleMargin, thicknessy },
+						{ angleMargin, 0 }, };
 			} else {
-				a = { PDD(thicknessx + angleMargin, h + thicknessy / 2), PDD(
-						thicknessx / 2 + angleMargin, h), PDD(
-						thicknessx + angleMargin, h - thicknessy / 2), };
+				a = { { thicknessx + angleMargin, h + thicknessy / 2 }, {
+						thicknessx / 2 + angleMargin, h }, { thicknessx
+						+ angleMargin, h - thicknessy / 2 } };
 			}
 
 			for (j = a.size() - 1; j >= 0; j--) {
-				PDD &p = a[j];
-				a.push_back(PDD(width - p.first, p.second));
+				auto &p = a[j];
+				a.push_back( { width - p.first, p.second });
 			}
 
 		}
@@ -124,7 +124,7 @@ void DigitalFont::drawString(const GdkRectangle &r, const std::string &s,
 	drawString(s, cr);
 }
 
-PDD DigitalFont::getK(const std::string &s) {
+PairDoubleDouble DigitalFont::getK(const std::string &s) {
 	/*
 	 thickness=size*kt;
 	 symbolMargin=size*ks;
@@ -141,7 +141,7 @@ PDD DigitalFont::getK(const std::string &s) {
 	const double ks = kSymbolMargin;
 	int colon = std::count(s.begin(), s.end(), ':');
 	int length = s.length();
-	return std::make_pair(
-			(length - colon) * (1 + 2 * kt) + colon * kt + (length - 1) * ks,
-			2 + 3 * kt);
+	return {
+		(length - colon) * (1 + 2 * kt) + colon * kt + (length - 1) * ks,
+		2 + 3 * kt};
 }
