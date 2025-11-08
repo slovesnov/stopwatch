@@ -29,9 +29,9 @@ static_assert(SIZEI(DIALOG_TITLE)==int(DialogType::DIALOG_TYPE_SIZE));
 static_assert(SIZEI(DIALOG_TITLE)==SIZEI(DIALOG_ICON));
 
 //same name function in Frame.cpp so make it static
-static void button_clicked(GtkWidget *w, gpointer) {
+static void button_clicked(GtkWidget *w, int n) {
 	assert(w);
-	dlg->buttonClicked(w);
+	dlg->buttonClicked(w, n);
 }
 
 void entry_activated(GtkEntry*, gpointer) {
@@ -127,7 +127,7 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		w3 = gtk_label_new("predefined sets");
 		gtk_widget_set_margin_top(w3, 3);
 		gtk_container_add(GTK_CONTAINER(w2), w3);
-		mPredefined = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+		mPredefined = gtk_grid_new();
 		gtk_container_add(GTK_CONTAINER(w2), mPredefined);
 		fillPredefinedSet();
 	}
@@ -236,27 +236,12 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 
 		g_signal_connect(entry, "changed", G_CALLBACK(entry_changed), 0);
 		g_signal_connect(entry, "activate", G_CALLBACK(entry_activated), 0); //call on enter or return key pressed
-		g_signal_connect(minimizeCheck, "toggled", G_CALLBACK(check_changed),
-				0);
+		for (auto a : { minimizeCheck, digitalModeCheck, closeWarningCheck })
+			g_signal_connect(a, "toggled", G_CALLBACK(check_changed), 0);
 		for (auto a : { okButton, upcomingButton, helpButton, editButton,
 				reloadButton, upcomingAllButton, testSoundButton })
 			g_signal_connect(a, "clicked", G_CALLBACK(button_clicked), 0);
-//		g_signal_connect(okButton, "clicked", G_CALLBACK(button_clicked), 0);
-//		g_signal_connect(upcomingButton, "clicked", G_CALLBACK(button_clicked),
-//				0);
-//		g_signal_connect(helpButton, "clicked", G_CALLBACK(button_clicked), 0);
-//		g_signal_connect(editButton, "clicked", G_CALLBACK(button_clicked), 0);
-//		g_signal_connect(reloadButton, "clicked", G_CALLBACK(button_clicked),
-//				0);
-//		g_signal_connect(upcomingAllButton, "clicked",
-//				G_CALLBACK(button_clicked), 0);
-//		g_signal_connect(testSoundButton, "clicked", G_CALLBACK(button_clicked),
-//				0);
 
-		g_signal_connect(digitalModeCheck, "toggled", G_CALLBACK(check_changed),
-				0);
-		g_signal_connect(closeWarningCheck, "toggled",
-				G_CALLBACK(check_changed), 0);
 	}
 
 	gtk_window_set_title(GTK_WINDOW(dialog), DIALOG_TITLE[int(dt)]);
@@ -292,7 +277,7 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 	gtk_widget_destroy(dialog);
 }
 
-void Dialog::buttonClicked(GtkWidget *w) {
+void Dialog::buttonClicked(GtkWidget *w, int n) {
 	if (w == okButton) {
 		gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 		frame.setParameters(*this);
@@ -343,8 +328,12 @@ void Dialog::buttonClicked(GtkWidget *w) {
 		int volume = Config::getSoundVolumeValue(soundVolume);
 		beep(volume);
 	} else {
-		std::string s = predefinedSet[getContainerIndex(mPredefined, w)];
-		updateParametersChanges(parse(s));
+		std::string s = predefinedSet[n >> 1];
+		bool ok = parse(s);
+		updateParametersChanges(ok);
+		if ((n & 1) && ok) {
+			buttonClicked(okButton);
+		}
 	}
 }
 
@@ -360,7 +349,7 @@ void Dialog::updateParametersChanges(bool ok) {
 
 void Dialog::entryActivated() {
 	if (gtk_widget_get_sensitive(okButton)) { //valid arguments
-		button_clicked(okButton, 0);
+		buttonClicked(okButton);
 	}
 }
 
@@ -410,10 +399,15 @@ void Dialog::updateReload() {
 
 void Dialog::fillPredefinedSet() {
 	clearContainer(mPredefined);
+	int i = -1, j;
 	for (auto &a : predefinedSet) {
-		auto b = gtk_button_new_with_label(a.c_str());
-		gtk_container_add(GTK_CONTAINER(mPredefined), b);
-		g_signal_connect(b, "clicked", G_CALLBACK(button_clicked), 0);
+		i++;
+		for (j = 0; j < 2; j++) {
+			auto b = gtk_button_new_with_label(j ? "." : a.c_str());
+			gtk_grid_attach(GTK_GRID(mPredefined), b, j, i, 1, 1);
+			g_signal_connect(b, "clicked", G_CALLBACK(button_clicked),
+					GP((i<<1)|j));
+		}
 	}
 	gtk_widget_show_all(mPredefined);
 }

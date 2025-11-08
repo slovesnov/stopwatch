@@ -33,7 +33,7 @@ public:
 	double soundVolume;
 
 	Dialog(DialogType dt, const std::string message = "");
-	void buttonClicked(GtkWidget *w);
+	void buttonClicked(GtkWidget *w, int n=-1);
 	void entryActivated();
 	void entryChanged();
 	void checkChanged(GtkToggleButton *w);
