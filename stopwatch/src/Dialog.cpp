@@ -28,6 +28,11 @@ const char *DIALOG_ICON[] = { "128", "error", "48" };
 static_assert(SIZEI(DIALOG_TITLE)==int(DialogType::DIALOG_TYPE_SIZE));
 static_assert(SIZEI(DIALOG_TITLE)==SIZEI(DIALOG_ICON));
 
+static gboolean label_clicked(GtkWidget *label, const gchar *uri, gpointer) {
+	openURL(uri);
+	return TRUE;
+}
+
 //same name function in Frame.cpp so make it static
 static void button_clicked(GtkWidget *w, int n) {
 	assert(w);
@@ -137,15 +142,20 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 	gtk_box_pack_start(GTK_BOX(w2), image, TRUE, TRUE, 0); //fill
 
 	if (dt == DialogType::PARAMETERS) {
-		w3 = gtk_label_new("click on button below\nto see full online help");
+		w3 = gtk_label_new(NULL);
+		auto markup = g_markup_printf_escaped(
+				"<a href=\"%s\">click for online help</a>", HELP_URL);
+		gtk_label_set_markup(GTK_LABEL(w3), markup);
+		g_free(markup);
+		g_signal_connect(w3, "activate-link", G_CALLBACK(label_clicked), 0);
 		gtk_container_add(GTK_CONTAINER(w2), w3);
 
-		s = getImagePath("help.png");
-		auto image = gtk_image_new_from_file(s.c_str());
-		helpButton = gtk_button_new();
-		gtk_button_set_image(GTK_BUTTON(helpButton), image);
-		gtk_widget_set_halign(helpButton, GTK_ALIGN_CENTER);
-		gtk_container_add(GTK_CONTAINER(w2), helpButton);
+//		s = getImagePath("help.png");
+//		auto image = gtk_image_new_from_file(s.c_str());
+//		helpButton = gtk_button_new();
+//		gtk_button_set_image(GTK_BUTTON(helpButton), image);
+//		gtk_widget_set_halign(helpButton, GTK_ALIGN_CENTER);
+//		gtk_container_add(GTK_CONTAINER(w2), helpButton);
 
 		w3 = lInfo = gtk_label_new(nullptr);
 		updateLabelInfo();
@@ -238,8 +248,8 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		g_signal_connect(entry, "activate", G_CALLBACK(entry_activated), 0); //call on enter or return key pressed
 		for (auto a : { minimizeCheck, digitalModeCheck, closeWarningCheck })
 			g_signal_connect(a, "toggled", G_CALLBACK(check_changed), 0);
-		for (auto a : { okButton, upcomingButton, helpButton, editButton,
-				reloadButton, upcomingAllButton, testSoundButton })
+		for (auto a : { okButton, upcomingButton, editButton, reloadButton,
+				upcomingAllButton, testSoundButton })
 			g_signal_connect(a, "clicked", G_CALLBACK(button_clicked), 0);
 
 	}
@@ -300,8 +310,8 @@ void Dialog::buttonClicked(GtkWidget *w, int n) {
 	} else if (w == upcomingAllButton) {
 		upcomingAll();
 		updateParametersChanges();
-	} else if (w == helpButton) {
-		gtk_show_uri_on_window(0, HELP_URL, GDK_CURRENT_TIME, NULL);
+//	} else if (w == helpButton) {
+//		gtk_show_uri_on_window(0, HELP_URL, GDK_CURRENT_TIME, NULL);
 	} else if (w == editButton) {
 		/* Note	gtk_show_uri_on_window(0, getPredefinedFileName().c_str(), GDK_CURRENT_TIME,NULL);
 		 * hang if set default application for txt files scite so use my own editor

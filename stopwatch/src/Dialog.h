@@ -16,8 +16,8 @@
 class Dialog: public Parameters {
 	GtkWidget *dialog, *entry, *comboMode, *lError, *lInfo, *mPredefined;
 	GtkWidget *minimizeCheck, *digitalModeCheck, *closeWarningCheck, *volume;
-	GtkWidget *okButton, *copyButton, *upcomingButton, *helpButton,
-			*reloadButton, *upcomingAllButton, *editButton, *testSoundButton;
+	GtkWidget *okButton, *copyButton, *upcomingButton, *reloadButton,
+			*upcomingAllButton, *editButton, *testSoundButton;
 	bool signals = true;
 
 	void updateParametersChanges(bool ok = true);
@@ -33,7 +33,7 @@ public:
 	double soundVolume;
 
 	Dialog(DialogType dt, const std::string message = "");
-	void buttonClicked(GtkWidget *w, int n=-1);
+	void buttonClicked(GtkWidget *w, int n = -1);
 	void entryActivated();
 	void entryChanged();
 	void checkChanged(GtkToggleButton *w);
