@@ -88,6 +88,7 @@ public:
 	}
 
 	gboolean timeFunction();
+	void onMousePress(GdkEventButton *e);
 	void onKeyPress(GdkEventKey *e);
 
 	void setParameters(Parameters const &p) {
@@ -123,6 +124,7 @@ public:
 	}
 
 	double getTime();
+	void toggleTimerForStopwatchMode();
 
 #ifndef NDEBUG
 	//for testing some functionality

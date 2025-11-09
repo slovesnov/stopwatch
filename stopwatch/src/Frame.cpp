@@ -22,6 +22,11 @@ const int MILLISECONDS = 500;
 const GdkRGBA COLOR[] = { { 0, 0, 0, 1 }, { 0, 0, .5, 1 } };
 const char *W[] = { "00:00:00", "00:00" };
 
+static gboolean mouse_press(GtkWidget *widget, GdkEventButton *e, gpointer) {
+	frame.onMousePress(e);
+	return TRUE;
+}
+
 void on_key_press(GtkWidget*, GdkEventKey *e, gpointer) {
 	frame.onKeyPress(e);
 }
@@ -85,6 +90,7 @@ void Frame::show() {
 	gtk_container_add(GTK_CONTAINER(window), box);
 
 	//later parameters.mode can be changed by user so connect signal anyway, and allow CTRL+A (adjust)
+	g_signal_connect(window, "button-press-event", G_CALLBACK(mouse_press), 0);
 	g_signal_connect(window, "key_press_event", G_CALLBACK (on_key_press), 0);
 	g_signal_connect(window, "window-state-event",
 			G_CALLBACK (window_state_event), 0);
@@ -548,6 +554,10 @@ gboolean Frame::timeFunction() {
 	return G_SOURCE_CONTINUE;
 }
 
+void Frame::onMousePress(GdkEventButton *e) {
+	toggleTimerForStopwatchMode();
+}
+
 void Frame::onKeyPress(GdkEventKey *e) {
 	if ((e->keyval == GDK_KEY_a || e->keyval == GDK_KEY_A)
 			&& (e->state & GDK_CONTROL_MASK)) {
@@ -585,16 +595,7 @@ void Frame::onKeyPress(GdkEventKey *e) {
 	}
 
 //	println("%x %x",e->keyval,e->state)
-
-	if (isStopwatch()) {
-		if (timerRunning) {
-			stopTimer();
-		} else {
-			beep();
-			startTimer();
-		}
-	}
-
+	toggleTimerForStopwatchMode();
 }
 
 void Frame::updateParse() {
@@ -777,6 +778,17 @@ DigitalFont Frame::createDigitalFont() {
 
 double Frame::getTime() {
 	return timerRunning ? timeElapse(startTime) : 0;
+}
+
+void Frame::toggleTimerForStopwatchMode() {
+	if (isStopwatch()) {
+		if (timerRunning) {
+			stopTimer();
+		} else {
+			beep();
+			startTimer();
+		}
+	}
 }
 
 #ifndef NDEBUG
