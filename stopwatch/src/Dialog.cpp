@@ -164,11 +164,11 @@ Dialog::Dialog(DialogType dt, const std::string message) {
 		gtk_label_set_xalign(GTK_LABEL(w3), 0);
 		gtk_container_add(GTK_CONTAINER(w2), w3);
 
-		editButton = gtk_button_new_with_label("edit/view settings file");
+		editButton = gtk_button_new_with_label("edit/view settings");
 		gtk_widget_set_halign(editButton, GTK_ALIGN_CENTER);
 		gtk_box_pack_start(GTK_BOX(w2), editButton, 0, 0, 2);
 
-		reloadButton = gtk_button_new_with_label("reload settings file");
+		reloadButton = gtk_button_new_with_label("reload settings");
 		gtk_widget_set_halign(reloadButton, GTK_ALIGN_CENTER);
 		gtk_box_pack_start(GTK_BOX(w2), reloadButton, 0, 0, 2);
 
