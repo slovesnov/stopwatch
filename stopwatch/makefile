@@ -31,6 +31,6 @@ $(TARGET): $(OBJS) $(EXTRA_OBJS)
 
 # 4. Вспомогательные команды
 clean:
-	rm -f $(OBJS) $(TARGET).exe $(TARGET)
+	rm -f $(OBJS) $(TARGET).exe
 
 .PHONY: all clean
