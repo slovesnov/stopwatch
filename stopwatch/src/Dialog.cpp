@@ -416,7 +416,7 @@ void Dialog::fillPredefinedSet() {
 			auto b = gtk_button_new_with_label(j ? "." : a.c_str());
 			gtk_grid_attach(GTK_GRID(mPredefined), b, j, i, 1, 1);
 			g_signal_connect(b, "clicked", G_CALLBACK(button_clicked),
-					GP((i<<1)|j));
+					GINT_TO_POINTER((i<<1)|j));
 		}
 	}
 	gtk_widget_show_all(mPredefined);

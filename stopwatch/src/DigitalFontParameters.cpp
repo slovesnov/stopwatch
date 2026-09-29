@@ -25,6 +25,6 @@ std::ostream& operator <<(std::ostream &o, const DigitalFontParameters &p) {
 	return o << join(p.width, p.height, p.isotropic);
 }
 
-//std::istream& operator >>(std::istream& i, DigitalFontParameters& p) {
-//	return i >> p.width >> p.height >> p.isotropic;
-//}
+std::istream& operator >>(std::istream& i, DigitalFontParameters& p) {
+	return i >> p.width >> p.height >> p.isotropic;
+}

@@ -22,6 +22,6 @@ public:
 };
 
 std::ostream& operator<<(std::ostream&, DigitalFontParameters const&);
-//std::istream& operator>>(std::istream&, DigitalFontParameters&);
+std::istream& operator>>(std::istream&, DigitalFontParameters&);
 
 #endif /* DIGITALFONTPARAMETERS_H_ */

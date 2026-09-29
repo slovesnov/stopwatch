@@ -8,8 +8,9 @@
  *         Homepage: slovesnov.rf.gd
  */
 
-#include "Frame.h"
 #include "Config.h"
+#include "Frame.h"
+
 
 const int captionsSizeIndex = 0;
 const int timeZoneIndex = 1;
@@ -21,167 +22,107 @@ const int maxDigitalClockSizeTimeIndex = 6;
 const int maxDigitalClockSizeStopwatchIndex = 7;
 const int volumeIndex = 8;
 
-const std::string CONFIG_TAGS[] =
-		{ "captionsSize", "timeZone", "digitalMode", "closeWarning",
-				"additionalHeight", "lastSetTime", "maxDigitalClockSize(time)",
-				"maxDigitalClockSize(stopwatch)", "volume" };
+const std::string CONFIG_TAGS[] = {"captionsSize",
+                                   "timeZone",
+                                   "digitalMode",
+                                   "closeWarning",
+                                   "additionalHeight",
+                                   "lastSetTime",
+                                   "maxDigitalClockSize(time)",
+                                   "maxDigitalClockSize(stopwatch)",
+                                   "volume"};
 
 Config::Config() {
-	timeZone = 3;
+  timeZone = 3;
 
-	/* set timezone in config file because got invalid time for
-	 * in summer for Moscow (actually no saving daylight)
-	 * For Moscow use "3" which means utc+3 without daylight savings
-	 */
-	if (timeZone == DEFAULT_TIME_ZONE) {
-		tz = g_time_zone_new_local();
-	} else {
-		//3 is full width with sign
-		std::string s = format("%+03d", timeZone);
-		tz = g_time_zone_new_identifier(s.c_str());
-	}
+  /* set timezone in config file because got invalid time for
+   * in summer for Moscow (actually no saving daylight)
+   * For Moscow use "3" which means utc+3 without daylight savings
+   */
+  if (timeZone == DEFAULT_TIME_ZONE) {
+    tz = g_time_zone_new_local();
+  } else {
+    // 3 is full width with sign
+    std::string s = format("%+03d", timeZone);
+    tz = g_time_zone_new_identifier(s.c_str());
+  }
 }
 
 void Config::init() {
-	int i, k;
-	int64_t ll;
-	std::string s;
-	char c;
+  std::string s;
 
-	timeZone = DEFAULT_TIME_ZONE;
-	digitalMode = 0;
-	closeWarning = 1;
-	maxDigitalClockSize[0] = { 800, 800, true };
-	maxDigitalClockSize[1] = { 1800, 1800, false };
-	soundVolume = 0x3000;
+  timeZone = DEFAULT_TIME_ZONE;
+  digitalMode = 0;
+  closeWarning = 1;
+  maxDigitalClockSize[0] = {800, 800, true};
+  maxDigitalClockSize[1] = {1800, 1800, false};
+  soundVolume = 0x3000;
 
-	int *var[] = { nullptr, &timeZone, &digitalMode, &closeWarning,
-			&additionalHeight, nullptr, nullptr, nullptr, &soundVolume };
+  readConfig(CONFIG_TAGS, captionsSize, timeZone, digitalMode, closeWarning,
+             additionalHeight, s, maxDigitalClockSize[0],
+             maxDigitalClockSize[1], soundVolume);
 
-	//c:\Users\noteboot\AppData\Local\stopwatch
-	MapStringString m;
-	MapStringString::iterator it;
-	read = loadConfig(m);
-	if (read) {
-		for (auto a : m) {
-			i = INDEX_OF(a.first, CONFIG_TAGS);
-			s = a.second;
-			if (i == captionsSizeIndex) {
-				std::istringstream in(s);
-				in >> captionsSize.x >> c >> captionsSize.y;
-			} else if (i == lastSetTimeIndex) {
-				if (!s.empty()) { //s.empty() if was stopwatch mode
-					auto v = split(s, " ");
-					for (auto a : v) {
-						if (parseString(a, ll)) {
-							lastSetTime.insert(ll);
-						}
-					}
-				}
-			} else if (i == maxDigitalClockSizeTimeIndex
-					|| i == maxDigitalClockSizeStopwatchIndex) {
-				maxDigitalClockSize[i - maxDigitalClockSizeTimeIndex].fromString(
-						s);
-			} else {
-				if (parseString(s, k)) {
-					*var[i] = k;
-				}
-			}
-
-			/*
-			 i=INDEX_OF(a.first,CONFIG_TAGS);
-			 j=i-sz;
-			 s=a.second;
-			 if(i==0){
-			 captionsSize.fromString(s);
-			 }
-			 else if(i<sz){
-			 if(parseString(s, k)){
-			 *var[i]=k;
-			 }
-			 }
-			 else if(i==sz){
-			 if(!s.empty()){//s.empty() if was stopwatch mode
-			 auto v = split(s, " ");
-			 for (auto a : v) {
-			 if(parseString(a, ll)){
-			 lastSetTime.insert(ll);
-			 }
-			 }
-			 }
-			 }
-			 else{
-			 assert(j<SIZEI(maxDigitalClockSize));
-			 maxDigitalClockSize[j].fromString(s);
-			 }
-			 */
-
-		}
-	}
-
-	/* set timezone in config file because got invalid time for
-	 * in summer for Moscow (actually no saving daylight)
-	 * For Moscow use "3" which means utc+3 without daylight savings
-	 */
-	if (timeZone == DEFAULT_TIME_ZONE) {
-		tz = g_time_zone_new_local();
-	} else {
-		//3 is full width with sign
-		std::string s = format("%+03d", timeZone);
-		tz = g_time_zone_new_identifier(s.c_str());
-	}
+  /* set timezone in config file because got invalid time for
+   * in summer for Moscow (actually no saving daylight)
+   * For Moscow use "3" which means utc+3 without daylight savings
+   */
+  if (timeZone == DEFAULT_TIME_ZONE) {
+    tz = g_time_zone_new_local();
+  } else {
+    // 3 is full width with sign
+    s = format("%+03d", timeZone);
+    tz = g_time_zone_new_identifier(s.c_str());
+  }
 }
 
 void Config::write() {
-	std::string s;
-	int i;
-	if (frame.isTime() && !frame.beepTime.empty()) {
-		i = 0;
-		for (auto v : frame.beepTime) {
-			if (i++) {
-				s += " ";
-			}
-			s += std::to_string(v);
-		}
-	} else {
-		s = "";
-	}
+  std::string s;
+  int i;
+  if (frame.isTime() && !frame.beepTime.empty()) {
+    i = 0;
+    for (auto v : frame.beepTime) {
+      if (i++) {
+        s += " ";
+      }
+      s += std::to_string(v);
+    }
+  } else {
+    s = "";
+  }
 
-	WRITE_CONFIG(CONFIG_TAGS, captionsSize, timeZone, digitalMode, closeWarning,
-			additionalHeight, s, maxDigitalClockSize[0], maxDigitalClockSize[1],
-			soundVolume);
+  writeConfig(CONFIG_TAGS, captionsSize, timeZone, digitalMode, closeWarning,
+              additionalHeight, s, maxDigitalClockSize[0],
+              maxDigitalClockSize[1], soundVolume);
 }
 
 VString Config::getArguments() const {
-	VString r;
+  VString r;
 
-	if (!read) {
-		return r;
-	}
+  if (!read) {
+    return r;
+  }
 
-	//diffDays
-	DateTime dt;
-	BeepTimeType now = DateTime().toBeepTime();
-	for (auto v : config.lastSetTime) {
-		if (now < v) {
-			dt.fromBeepTime(v);
-			int d = dt.diffDays(now);
-			auto s = std::to_string(getHHMM(v));
-			if (d > 0) {
-				s += "+";
-				if (d > 1) {
-					s += std::to_string(d);
-				}
-			}
-			r.push_back(s);
-		}
-	}
+  // diffDays
+  DateTime dt;
+  BeepTimeType now = DateTime().toBeepTime();
+  for (auto v : config.lastSetTime) {
+    if (now < v) {
+      dt.fromBeepTime(v);
+      int d = dt.diffDays(now);
+      auto s = std::to_string(getHHMM(v));
+      if (d > 0) {
+        s += "+";
+        if (d > 1) {
+          s += std::to_string(d);
+        }
+      }
+      r.push_back(s);
+    }
+  }
 
-	if (!r.empty()) {
-		r.insert(r.begin(), "tm");
-	}
+  if (!r.empty()) {
+    r.insert(r.begin(), "tm");
+  }
 
-	return r;
-
+  return r;
 }
-
