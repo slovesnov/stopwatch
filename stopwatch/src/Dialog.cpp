@@ -25,8 +25,8 @@ const char *DIALOG_TITLE[] =
 				"Please set up parameters and press enter/return key or click ok button",
 				"error", "Success reload" };
 const char *DIALOG_ICON[] = { "128", "error", "48" };
-static_assert(SIZEI(DIALOG_TITLE)==int(DialogType::DIALOG_TYPE_SIZE));
-static_assert(SIZEI(DIALOG_TITLE)==SIZEI(DIALOG_ICON));
+static_assert(std::ssize(DIALOG_TITLE)==int(DialogType::DIALOG_TYPE_SIZE));
+static_assert(std::ssize(DIALOG_TITLE)==std::ssize(DIALOG_ICON));
 
 static gboolean label_clicked(GtkWidget *label, const gchar *uri, gpointer) {
 	openURL(uri);
