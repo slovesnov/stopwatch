@@ -43,7 +43,7 @@ Config::Config() {
     tz = g_time_zone_new_local();
   } else {
     // 3 is full width with sign
-    std::string s = format("%+03d", timeZone);
+    std::string s = std::format("{:+03}", timeZone);
     tz = g_time_zone_new_identifier(s.c_str());
   }
 }
@@ -70,7 +70,7 @@ void Config::init() {
     tz = g_time_zone_new_local();
   } else {
     // 3 is full width with sign
-    s = format("%+03d", timeZone);
+    s = std::format("{:+03}", timeZone);
     tz = g_time_zone_new_identifier(s.c_str());
   }
 }

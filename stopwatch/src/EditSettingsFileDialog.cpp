@@ -94,7 +94,7 @@ void EditSettingsFileDialog::updateInfo() {
 
 	int l = gtk_text_iter_get_line(&it);
 	int c = gtk_text_iter_get_line_offset(&it);
-	auto s = format("line:%d column:%d", l + 1, c + 1);
+	auto s = std::format("line:{} column:{}", l + 1, c + 1);
 	gtk_label_set_text(GTK_LABEL(info), s.c_str());
 }
 

@@ -271,7 +271,7 @@ void Frame::draw() {
 
 	if (stopwatch) {
 		i = getTime();
-		s = format("%02d:%02d", i / 60, i % 60);
+		s = std::format("{:02}:{:02}", i / 60, i % 60);
 	} else {
 		s = d.format("%H:%M:%S");
 	}
@@ -630,7 +630,7 @@ void Frame::setIcon() {
 		i = getTime();
 		//000 not 0000 to make bigger font, also do not output 0:00 for the same reason
 		assert(i >= 0);
-		s = format("%d%02d", i / 60, i % 60);
+		s = std::format("{}{:02}", i / 60, i % 60);
 	} else {
 		s = beepTimeFormat(getNextBeepTime(), true);
 	}
@@ -661,7 +661,7 @@ void Frame::setIcon() {
 	//string can be 1234+100 so start from small k
 	for (pi = 0, pj = 0, pk = 0, k = 7;; k++) {
 		desc = pango_font_description_from_string(
-				format("Times New Roman, %d", k).c_str());
+				std::format("Times New Roman, {}", k).c_str());
 		//pango_font_description_set_weight (desc,PANGO_WEIGHT_NORMAL);
 		pango_layout_set_font_description(layout, desc);
 		pango_layout_set_markup(layout, s.c_str(), -1);
@@ -677,7 +677,7 @@ void Frame::setIcon() {
 	assert(pi != 0);	//should be at least one cycle step
 //	println("%s %d %dx%d %dx%d",s.c_str(),pk,i,j,pi,pj)
 	desc = pango_font_description_from_string(
-			format("Times New Roman, %d", pk).c_str());
+			std::format("Times New Roman, {}", pk).c_str());
 	//pango_font_description_set_weight (desc,PANGO_WEIGHT_NORMAL);
 	pango_layout_set_font_description(layout, desc);
 	pango_layout_set_markup(layout, s.c_str(), -1);
